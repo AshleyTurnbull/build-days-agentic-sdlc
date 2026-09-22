@@ -51,3 +51,11 @@ The application SHALL expose health and readiness endpoints suitable for GitHub 
 - **WHEN** the application cannot access required persistent storage
 - **THEN** the readiness endpoint reports failure without exposing credentials or sensitive configuration
 
+### Requirement: Request abuse resistance
+
+The application SHALL rate-limit repeated requests to storage-backed and static-content routes while keeping the liveness endpoint available to platform health probes.
+
+#### Scenario: Client exceeds the request limit
+
+- **WHEN** one client exceeds the configured request allowance within the rate-limit window
+- **THEN** the application rejects additional requests with an actionable retry response without accessing storage or the file system

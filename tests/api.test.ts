@@ -103,6 +103,25 @@ describe("feedback API", () => {
       });
   });
 
+  it("rate-limits repeated application requests without blocking liveness", async () => {
+    const app = createApp({
+      storage: new InMemoryFeedbackStorage(),
+      logger: silentLogger,
+    });
+
+    for (let attempt = 0; attempt < 120; attempt += 1) {
+      await request(app).get("/api/feedback").expect(200);
+    }
+
+    await request(app).get("/api/feedback").expect(429, {
+      error: {
+        code: "RATE_LIMITED",
+        message: "Too many requests. Try again shortly.",
+      },
+    });
+    await request(app).get("/health").expect(200, { status: "healthy" });
+  });
+
   it("converts unexpected storage failures to safe errors", async () => {
     const storage: FeedbackStorage = {
       initialize: () => Promise.resolve(),

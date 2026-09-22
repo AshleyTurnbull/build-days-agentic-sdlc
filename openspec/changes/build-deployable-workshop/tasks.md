@@ -31,6 +31,7 @@
 - [x] 4.4 Add CodeQL and dependency-review paths with documented availability fallbacks.
 - [x] 4.5 Add OIDC-based Bicep validation and Azure `what-if`.
 - [x] 4.6 Add protected App Service deployment, health checks, and deployment evidence.
+- [x] 4.7 Rate-limit storage-backed and static-content requests before expensive operations.
 
 ## 5. Agentic workflow
 

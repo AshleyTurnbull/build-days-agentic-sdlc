@@ -42,6 +42,10 @@ Feedback records contain an identifier, title, description, category, author dis
 
 App Service provides a short and reliable path from a Node.js package to Azure. The web app receives a system-assigned identity with only the required Storage Table data role.
 
+### Rate-limit application traffic before expensive operations
+
+Express applies a per-client request limit before storage-backed API handlers and static-file serving. The liveness endpoint remains exempt so Azure health probes can distinguish process availability during abusive traffic.
+
 ### Compose infrastructure from pinned AVM modules
 
 The root deployment composes resource-group-scoped AVM modules for storage, monitoring, App Service plan, and web app where supported. Custom Bicep is limited to composition or gaps that the selected AVM modules do not cover, and exceptions are documented.
@@ -74,4 +78,3 @@ The primary GH-AW reads the OpenSpec change, pull-request checks, security resul
 - A broad feature menu can create uneven difficulty. Features must be pre-validated for comparable scope and isolated file ownership.
 - Multiple active workflows can overwhelm participants. Labs expose only the workflow relevant to the current stage and use concise summaries.
 - Generated GH-AW lock files can drift from Markdown source. CI or instructor validation must compile and compare them.
-

@@ -42,7 +42,7 @@ jobs:
       - name: Install GH-AW compiler
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh extension install github/gh-aw@v0.88.8
+        run: gh extension install github/gh-aw --pin v0.88.8
       - name: Verify generated GH-AW lock
         run: |
           gh aw compile evidence-review --no-check-update

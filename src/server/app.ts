@@ -3,6 +3,7 @@ import express, {
   type ErrorRequestHandler,
   type RequestHandler,
 } from "express";
+import { rateLimit } from "express-rate-limit";
 import { ZodError, type ZodType } from "zod";
 import {
   createFeedbackSchema,
@@ -30,6 +31,7 @@ export const createApp = ({
 }: AppOptions) => {
   const app = express();
   app.disable("x-powered-by");
+  app.set("trust proxy", 1);
   app.use(express.json({ limit: "32kb" }));
   app.use((request, response, next) => {
     const requestId = request.header("x-request-id") ?? randomUUID();
@@ -46,6 +48,23 @@ export const createApp = ({
     });
     next();
   });
+  app.use(
+    rateLimit({
+      windowMs: 60_000,
+      limit: 120,
+      standardHeaders: "draft-8",
+      legacyHeaders: false,
+      skip: (request) => request.path === "/health",
+      handler: (_request, response) => {
+        response.status(429).json({
+          error: {
+            code: "RATE_LIMITED",
+            message: "Too many requests. Try again shortly.",
+          },
+        } satisfies ApiError);
+      },
+    }),
+  );
 
   app.get("/health", (_request, response) => {
     response.json({ status: "healthy" });
