@@ -1,0 +1,46 @@
+name: Dependency review
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/dependency-review.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check dependency graph availability
+        id: availability
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          status="$(gh api -i "repos/$REPOSITORY/dependency-graph/sbom" 2>&1 | sed -n 's/^HTTP[^ ]* \([0-9][0-9][0-9]\).*/\1/p' | head -n 1 || true)"
+          if [ "$status" = "200" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Dependency review is unavailable (HTTP ${status:-unknown}). Enable Dependency Graph/GHAS as required by repository visibility and organization policy."
+            {
+              echo "## Dependency review unavailable"
+              echo "The dependency graph API returned HTTP \`${status:-unknown}\`."
+              echo "No dependency safety claim is made. Enable the feature or perform the approved instructor fallback before merge."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Review dependency changes
+        if: steps.availability.outputs.available == 'true'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+      - name: Record available review
+        if: steps.availability.outputs.available == 'true'
+        run: echo "Dependency review executed; see the action result above." >> "$GITHUB_STEP_SUMMARY"
+

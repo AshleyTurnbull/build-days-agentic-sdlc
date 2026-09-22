@@ -1,0 +1,178 @@
+name: Deploy workshop app to Azure
+
+on:
+  workflow_dispatch:
+    inputs:
+      teamId:
+        description: Lowercase team identifier used by the approved Bicep deployment
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: workshop-deployment-${{ inputs.teamId }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: workshop
+      url: ${{ steps.infrastructure.outputs.application_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.19"
+          cache: npm
+      - name: Validate deployment inputs and OIDC configuration
+        shell: bash
+        env:
+          TEAM_ID: ${{ inputs.teamId }}
+          CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$TEAM_ID" =~ ^[a-z0-9][a-z0-9-]{1,18}[a-z0-9]$ ]]; then
+            echo "::error::teamId must be 3-20 lowercase letters, digits, or internal hyphens."
+            exit 1
+          fi
+          for name in CLIENT_ID TENANT_ID SUBSCRIPTION_ID RESOURCE_GROUP; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing environment variable $name. Configure OIDC and the protected workshop environment."
+              exit 1
+            fi
+          done
+      - name: Build and test application
+        run: |
+          npm ci
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+          npm prune --omit=dev
+      - name: Create deployment package
+        run: zip -r app.zip dist package.json package-lock.json node_modules
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy infrastructure
+        id: infrastructure
+        shell: bash
+        env:
+          TEAM_ID: ${{ inputs.teamId }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+        run: |
+          set -euo pipefail
+          outputs="$(az deployment group create \
+            --name "workshop-${GITHUB_RUN_ID}" \
+            --resource-group "$RESOURCE_GROUP" \
+            --template-file infra/main.bicep \
+            --parameters infra/main.example.bicepparam teamIdentifier="$TEAM_ID" \
+            --query properties.outputs \
+            --output json)"
+          app_name="$(jq -r '.appName.value // empty' <<< "$outputs")"
+          app_url="$(jq -r '.appUrl.value // empty' <<< "$outputs")"
+          if [ -z "$app_name" ] || [ -z "$app_url" ]; then
+            echo "::error::Bicep must output appName and appUrl."
+            exit 1
+          fi
+          echo "app_name=$app_name" >> "$GITHUB_OUTPUT"
+          echo "application_url=${app_url%/}" >> "$GITHUB_OUTPUT"
+      - name: Deploy application package
+        run: >
+          az webapp deploy
+          --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}"
+          --name "${{ steps.infrastructure.outputs.app_name }}"
+          --src-path app.zip
+          --type zip
+          --clean true
+          --restart true
+      - name: Verify deployed health, readiness, and API
+        shell: bash
+        env:
+          APPLICATION_URL: ${{ steps.infrastructure.outputs.application_url }}
+        run: |
+          set -euo pipefail
+          for attempt in {1..36}; do
+            if curl --fail --silent --show-error "$APPLICATION_URL/health" >/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 36 ]; then
+              echo "::error::Deployment health check failed for six minutes."
+              exit 1
+            fi
+            sleep 10
+          done
+          curl --fail --silent --show-error "$APPLICATION_URL/ready" >/dev/null
+          feedback_id="$(
+            curl --fail --silent --show-error \
+              --request POST \
+              --header "Content-Type: application/json" \
+              --data "{\"title\":\"Deployment ${GITHUB_RUN_ID}\",\"description\":\"Automated post-deployment verification.\",\"category\":\"facilitation\",\"displayName\":\"GitHub Actions\"}" \
+              "$APPLICATION_URL/api/feedback" |
+              jq -r '.feedback.id // empty'
+          )"
+          if [ -z "$feedback_id" ]; then
+            echo "::error::Feedback creation smoke test did not return an ID."
+            exit 1
+          fi
+          vote_count="$(
+            curl --fail --silent --show-error \
+              --request POST \
+              --header "Content-Type: application/json" \
+              --data "{\"clientId\":\"deployment-${GITHUB_RUN_ID}\"}" \
+              "$APPLICATION_URL/api/feedback/$feedback_id/votes" |
+              jq -r '.feedback.votes // empty'
+          )"
+          if [ "$vote_count" != "1" ]; then
+            echo "::error::Feedback vote smoke test expected one vote and received '$vote_count'."
+            exit 1
+          fi
+          duplicate_vote="$(
+            curl --fail --silent --show-error \
+              --request POST \
+              --header "Content-Type: application/json" \
+              --data "{\"clientId\":\"deployment-${GITHUB_RUN_ID}\"}" \
+              "$APPLICATION_URL/api/feedback/$feedback_id/votes"
+          )"
+          if [ "$(jq -r '.alreadyVoted' <<< "$duplicate_vote")" != "true" ] ||
+            [ "$(jq -r '.feedback.votes' <<< "$duplicate_vote")" != "1" ]; then
+            echo "::error::Duplicate-vote smoke test did not preserve one vote."
+            exit 1
+          fi
+      - name: Publish deployment evidence
+        if: success()
+        env:
+          APPLICATION_URL: ${{ steps.infrastructure.outputs.application_url }}
+          APP_NAME: ${{ steps.infrastructure.outputs.app_name }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          TEAM_ID: ${{ inputs.teamId }}
+        run: |
+          {
+            echo "## Verified App Service deployment"
+            echo "- Commit: \`$GITHUB_SHA\`"
+            echo "- Environment: \`workshop\`"
+            echo "- Team: \`$TEAM_ID\`"
+            echo "- Resource group: \`$RESOURCE_GROUP\`"
+            echo "- App Service: \`$APP_NAME\`"
+            echo "- URL: $APPLICATION_URL"
+            echo "- Deployment/run ID: \`$GITHUB_RUN_ID\`"
+            echo "- Evidence: package deployment, health, readiness, and API smoke checks passed."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload deployment package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-service-package-${{ github.sha }}
+          path: app.zip
+          if-no-files-found: error
+          retention-days: 7

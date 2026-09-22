@@ -1,0 +1,57 @@
+name: OpenSpec validation and repository integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.19"
+      - name: Install OpenSpec
+        run: npm install --global @fission-ai/openspec@1.13.1
+      - name: Validate all OpenSpec changes
+        run: openspec validate --all
+      - name: Check repository contract
+        shell: pwsh
+        run: |
+          $required = @(
+            "AGENTS.md",
+            "DESIGN.md",
+            "docs/README.md",
+            "openspec/config.yaml",
+            ".github/AGENTS.md",
+            ".github/PULL_REQUEST_TEMPLATE.md"
+          )
+          $missing = $required | Where-Object { -not (Test-Path -LiteralPath $_) }
+          if ($missing) {
+            throw "Missing repository contract files: $($missing -join ', ')"
+          }
+          git diff --check
+      - name: Install GH-AW compiler
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh extension install github/gh-aw@v0.88.8
+      - name: Verify generated GH-AW lock
+        run: |
+          gh aw compile evidence-review --no-check-update
+          git diff --exit-code -- .github/workflows/evidence-review.lock.yml
+      - name: Summarize integrity evidence
+        if: always()
+        run: |
+          {
+            echo "## Repository integrity"
+            echo "- OpenSpec validation: ${{ job.status }}"
+            echo "- GH-AW source changes must be compiled with \`gh aw compile evidence-review\`."
+          } >> "$GITHUB_STEP_SUMMARY"
