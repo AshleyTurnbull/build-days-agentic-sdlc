@@ -45,13 +45,13 @@ jobs:
         run: gh extension install github/gh-aw --pin v0.88.8
       - name: Verify generated GH-AW lock
         run: |
-          gh aw compile evidence-review --no-check-update
-          git diff --exit-code -- .github/workflows/evidence-review.lock.yml
+          gh aw compile --no-check-update
+          git diff --exit-code -- '.github/workflows/*.lock.yml'
       - name: Summarize integrity evidence
         if: always()
         run: |
           {
             echo "## Repository integrity"
             echo "- OpenSpec validation: ${{ job.status }}"
-            echo "- GH-AW source changes must be compiled with \`gh aw compile evidence-review\`."
+            echo "- Active GH-AW source changes must be compiled with \`gh aw compile\`."
           } >> "$GITHUB_STEP_SUMMARY"
