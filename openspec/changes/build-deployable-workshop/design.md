@@ -66,9 +66,15 @@ No workflow may report application, security, infrastructure, or deployment succ
 
 CodeQL, dependency review, protected environments, cloud agents, and GH-AW can depend on organization policy, repository visibility, license, or preview access. Instructor readiness checks identify availability. Labs provide a preferred path and a documented fallback without misrepresenting the missing control.
 
-### Use one evidence-focused GH-AW
+### Keep the GH-AW answer out of the starter
 
-The primary GH-AW reads the OpenSpec change, pull-request checks, security result, and deployment evidence. It declares read-only permissions plus one narrow safe output. It cannot approve, merge, edit protected workflows, or deploy.
+The starter contains a small issue-clarifier GH-AW so instructors can verify
+runtime access and participants can inspect valid syntax, permissions, and safe
+outputs. Lab 5 provides an incomplete evidence-review Markdown starter outside
+the active workflows directory. Teams author its evidence logic, declare one
+narrow safe output, compile the lock workflow, and run it against their own
+delivery evidence. The completed evidence-review answer is not committed to the
+template branch.
 
 ## Risks / Trade-offs
 

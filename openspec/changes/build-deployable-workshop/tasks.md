@@ -35,9 +35,9 @@
 
 ## 5. Agentic workflow
 
-- [x] 5.1 Add the GH-AW evidence-review source with read-only permissions and one narrow safe output.
-- [x] 5.2 Compile and commit the generated lock workflow.
-- [x] 5.3 Add source/lock validation and update guidance.
+- [x] 5.1 Add a working issue-clarifier GH-AW reference with read-only permissions and one narrow safe output.
+- [x] 5.2 Compile and commit the reference workflow's generated lock file.
+- [x] 5.3 Add an incomplete evidence-review starter and participant authoring/compilation guidance.
 
 ## 6. Participant and instructor experience
 

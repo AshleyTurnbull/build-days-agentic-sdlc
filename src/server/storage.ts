@@ -34,7 +34,6 @@ interface FeedbackEntity extends TableEntity {
   displayName: string;
   votes: number;
   createdAt: string;
-  status?: Feedback["status"];
 }
 
 const toFeedback = (entity: FeedbackEntity): Feedback => ({
@@ -45,7 +44,6 @@ const toFeedback = (entity: FeedbackEntity): Feedback => ({
   displayName: entity.displayName,
   votes: entity.votes,
   createdAt: entity.createdAt,
-  ...(entity.status ? { status: entity.status } : {}),
 });
 
 export class InMemoryFeedbackStorage implements FeedbackStorage {

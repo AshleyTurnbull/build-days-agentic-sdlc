@@ -57,6 +57,13 @@ cause.
 
 ## 3. Review infrastructure evidence
 
+Before requesting `what-if`, extend the existing AVM web-app configuration with
+the App Service health-check path `/health`. This is the required participant
+infrastructure change: the starter provides a deployable AVM composition, while
+the team makes it production-aware for its changed application. Keep the
+setting in the AVM module inputs rather than adding an unmanaged raw web-app
+resource.
+
 Confirm that the infrastructure change:
 
 - composes pinned AVM modules where suitable modules exist;
@@ -64,6 +71,7 @@ Confirm that the infrastructure change:
 - enables App Service system-assigned managed identity;
 - grants only the required Storage Table data-plane role;
 - stores no long-lived Azure client secret;
+- configures the App Service health check to use `/health`;
 - shows the `what-if` result and documented AVM exceptions.
 
 The instructor owns the external Azure federation and resource-group setup.

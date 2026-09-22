@@ -16,6 +16,12 @@ This model allows organizers to validate, before attendees arrive:
 
 Forks are a fallback for attendees outside the workshop organization, not the standard path.
 
+The template branch is a paved road, not a completed lab solution. It includes
+the working feedback/voting baseline, CI, deployable AVM composition, and one
+small reference GH-AW. Teams add a selected feature, the App Service health
+check configuration, and their own evidence-review GH-AW. Completed answers
+belong in instructor solution branches or a separate instructor repository.
+
 ## Team workflow
 
 Teams of three or four share one repository. Suggested roles rotate between labs:

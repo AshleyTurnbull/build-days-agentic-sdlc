@@ -14,7 +14,7 @@ Participants need a predictable starter application and a governed delivery path
 - Add OIDC-based Azure validation and protected deployment workflows.
 - Add issue forms, specification and implementation PR contracts, Copilot customizations, and GitHub-visible task orchestration.
 - Complete the participant labs and instructor provisioning/recovery guidance.
-- Add a GitHub Agentic Workflow that evaluates real specification, CI, security, and deployment evidence and produces one narrow safe output.
+- Add a small working GH-AW reference plus a participant starter for authoring an evidence workflow against real specification, CI, security, and deployment evidence.
 
 ## Capabilities
 
@@ -37,4 +37,3 @@ None.
 - Adds active GitHub Actions workflows, issue forms, PR templates, Copilot customizations, and GH-AW.
 - Expands participant labs and adds instructor provisioning, readiness, recovery, and cleanup documentation.
 - Requires Node.js, Azure CLI/Bicep, GitHub CLI, OpenSpec, and GH-AW tooling for full instructor validation.
-

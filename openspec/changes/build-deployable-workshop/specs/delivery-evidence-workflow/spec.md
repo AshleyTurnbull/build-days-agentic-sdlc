@@ -1,13 +1,13 @@
 ## ADDED Requirements
 
-### Requirement: Evidence review
+### Requirement: Participant-authored evidence review
 
-The GitHub Agentic Workflow SHALL evaluate the linked OpenSpec scenarios, pull-request checks, security result, and Azure deployment evidence.
+The starter repository SHALL provide a working reference GH-AW and an incomplete evidence-review starter that participants author to evaluate linked OpenSpec scenarios, pull-request checks, security results, and Azure deployment evidence.
 
 #### Scenario: Evidence is complete
 
-- **WHEN** the linked requirements, required checks, security status, and deployment record are available
-- **THEN** the workflow produces a concise evidence summary through its declared safe output
+- **WHEN** the team completes the evidence-review instructions, declares one safe output, and compiles the workflow
+- **THEN** the workflow evaluates the available linked requirements, checks, security status, and deployment record and produces a concise evidence summary
 
 #### Scenario: Evidence is incomplete
 
@@ -25,10 +25,9 @@ The evidence workflow SHALL use read-only permissions by default and SHALL decla
 
 ### Requirement: Reproducible workflow generation
 
-The repository SHALL retain the GH-AW Markdown source and its generated lock workflow together.
+The participant end state SHALL retain the team-authored GH-AW Markdown source and its generated lock workflow together.
 
 #### Scenario: Workflow source changes
 
 - **WHEN** the Markdown source is modified
 - **THEN** validation detects a missing or stale generated lock workflow and provides the compile command
-

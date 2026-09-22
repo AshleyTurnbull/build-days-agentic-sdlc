@@ -21,6 +21,25 @@ OpenSpec and harness engineering solve different problems:
 
 OpenSpec is the workshop's canonical SDD framework. Harness engineering is the persistent execution environment around it.
 
+## What participants receive and what they build
+
+The template starts with a working feedback board, tests, CI, AVM-based Azure
+deployment, and a small GH-AW issue-clarifier reference. This paved road keeps
+the four-hour event focused on the delivery method rather than application
+scaffolding.
+
+Each team still creates the workshop outcome:
+
+1. specify one feature from `docs/features/`;
+2. implement its contract, API, UI, and tests with local and cloud agents;
+3. extend the App Service AVM configuration with the health-check setting;
+4. merge through the GitHub evidence gates and deploy the changed app;
+5. author and compile an evidence-review GH-AW from the Lab 5 starter.
+
+Completed feature and evidence-workflow solutions do not belong on the template
+branch. Instructor checkpoints provide recovery without replacing participant
+work.
+
 ## What teams build
 
 Teams extend a TypeScript feedback board with a React client and Express API.

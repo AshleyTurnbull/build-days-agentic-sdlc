@@ -46,7 +46,6 @@ export interface Feedback extends CreateFeedbackRequest {
   id: string;
   votes: number;
   createdAt: string;
-  status?: "open" | "planned" | "completed";
 }
 
 export interface VoteResult {
