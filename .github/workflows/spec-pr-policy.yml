@@ -51,6 +51,13 @@ jobs:
             exit 1
           fi
 
+          if ! git cat-file -e "$BASE_SHA:package.json" 2>/dev/null &&
+            printf '%s\n' "$changed" | grep -Fxq "package.json" &&
+            printf '%s\n' "$changed" | grep -Fxq "$change_path/proposal.md"; then
+            echo "Initial repository bootstrap includes its controlling OpenSpec change; no earlier specification PR can exist."
+            exit 0
+          fi
+
           spec_pr_number="$(
             printf '%s\n' "$PR_BODY" |
               sed -nE 's/^[[:space:]]*-[[:space:]]*Specification PR:[[:space:]]*#([0-9]+).*$/\1/p' |
