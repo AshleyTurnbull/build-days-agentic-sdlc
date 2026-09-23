@@ -212,6 +212,12 @@ reference demonstrates a different trigger/tool/output pattern, such as
 explaining a failed test. Neither reference contains the Lab 5 solution.
 Markdown source and generated lock files remain reproducible together.
 
+Rolling official GH-AW documentation and the dated public-preview announcement
+provide product orientation and availability context. They do not replace the
+repository's pinned creation guide, compiler version, generated lock workflow,
+or validation command. Optional community resources are centralized in the
+documentation resource map and cannot redefine workshop authority.
+
 ### Publish recovery checkpoints without rewriting participant history
 
 Reviewed states for `lab1-start` through `lab5-start` live in a private

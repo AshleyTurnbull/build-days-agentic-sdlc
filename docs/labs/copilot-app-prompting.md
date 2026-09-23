@@ -11,6 +11,12 @@ and
 [App slash commands](https://docs.github.com/en/copilot/reference/github-copilot-app-reference/slash-commands).
 Type `/` in the App to see the commands available in your current context.
 
+For the broader delivery model, read
+[How to bring your software delivery workflow into GitHub with agent apps](https://github.blog/ai-and-ml/github-copilot/how-to-bring-your-software-delivery-workflow-into-github-with-agent-apps/).
+The article provides context for bringing specialized delivery capabilities
+into GitHub; the lab prompts remain bounded by this repository's issues,
+instructions, permissions, and evidence gates.
+
 ## Choose the right App experience
 
 | Experience | Use it for | Human responsibility |

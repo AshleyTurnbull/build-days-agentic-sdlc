@@ -56,6 +56,8 @@ Do not present those concepts as unique to this workshop. Demonstrate instead ho
 The win is not an additional lifecycle diagram. It is one governed control plane from intent through production evidence.
 
 See [`aidlc-positioning.md`](aidlc-positioning.md) for the detailed comparison and lab proof points.
+See [`resources.md`](resources.md) for the canonical tool references, official
+GitHub context, and broader Agentic SDLC reading used by the workshop.
 
 ## Lab outputs
 

@@ -14,6 +14,12 @@ OpenSpec is the canonical hands-on SDD path. The
 [Spec Kit comparison](../comparisons/spec-kit-to-openspec.md) is a concept map,
 not another toolchain.
 
+Before starting, review [OpenSpec](https://openspec.dev/) and skim the internal
+[Spec Kit comparison](../comparisons/spec-kit-to-openspec.md). Use the
+comparison to understand both approaches; follow this repository's OpenSpec
+path for the exercise. The curated
+[workshop resources](../resources.md) explain that distinction.
+
 Use the [App prompting pattern](copilot-app-prompting.md) throughout this lab.
 
 ## Prerequisites

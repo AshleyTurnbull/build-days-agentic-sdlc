@@ -144,3 +144,9 @@
   readiness while keeping operational scripts instructor-only.
 - [x] 11.6 Add structural documentation tests and validate OpenSpec, links,
   prompt references, application checks, and diff hygiene.
+- [x] 11.7 Add a curated resource map for OpenSpec, Spec Kit, GH-AW, GitHub
+  agent apps, and broader Agentic SDLC guidance, then link it from the
+  positioning and relevant labs without creating parallel workshop paths.
+- [x] 11.8 Extend structural tests and validate internal and external links,
+  OpenSpec, Markdown hygiene, and retention of the OpenSpec-canonical and
+  pinned GH-AW guardrails.

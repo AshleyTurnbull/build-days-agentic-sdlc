@@ -152,3 +152,22 @@ At the end of the workshop, imagine handing a new reviewer only the repository U
 8. what follow-up work was created from the resulting evidence.
 
 If that story is available in the repository and platform, the team has created more than an agent-generated feature: it has created a governed and repeatable delivery loop.
+
+## Continue the comparison
+
+The workshop's [resources and further reading](resources.md) page separates the
+canonical hands-on tools from official GitHub context and broader Agentic SDLC
+perspectives. In particular:
+
+- [OpenSpec](https://openspec.dev/) and
+  [Spec Kit](https://github.com/github/spec-kit) provide useful points of
+  comparison for specification-driven development;
+- the [GitHub agent apps delivery article](https://github.blog/ai-and-ml/github-copilot/how-to-bring-your-software-delivery-workflow-into-github-with-agent-apps/)
+  shows how delivery context can move into GitHub;
+- the [Agentic SDLC Guidebook](https://agenticsdlc.github.io/agentic-sdlc-ops/)
+  and [Agentic SDLC Handbook](https://danielmeppiel.github.io/agentic-sdlc-handbook/)
+  offer complementary operating-model and practitioner perspectives.
+
+These are additional lenses, not competing lab paths. The repository's
+OpenSpec artifacts, design, instructions, workflows, and evidence remain the
+workshop contract.

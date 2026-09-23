@@ -14,6 +14,12 @@ This file adds local guidance for `docs/`.
 - Link to root `DESIGN.md` for architecture instead of copying it.
 - Link to active OpenSpec artifacts for change-specific requirements.
 - Verify relative links and command names when documentation changes.
+- Centralize optional external reading in `docs/resources.md`. Repeat an
+  external link in a participant lab only when it is needed to execute the lab
+  or correctly interpret product status or versioning.
+- Repository instructions, active OpenSpec requirements, and checked-in pinned
+  inputs take precedence over rolling external documentation and community
+  guidance.
 - Do not claim a workflow is active merely because the approved design plans it.
   The reserved workflow names are `openspec.yml`, `ci.yml`,
   `spec-pr-policy.yml`, `codeql.yml`, `dependency-review.yml`,

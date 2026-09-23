@@ -21,6 +21,13 @@ exactly one narrowly authorized safe output.
 GH-AW availability and runner/model authorization are external setup. A local
 summary is not a GH-AW run.
 
+Review the [GitHub Agentic Workflows home](https://github.github.com/gh-aw/)
+and the
+[public-preview announcement](https://github.blog/changelog/2026-06-11-github-agentic-workflows-is-now-in-public-preview/)
+before authoring. The external references explain the platform and security
+model; the repository's pinned compiler, checked-in instructions, and narrow
+safe-output contract govern this lab.
+
 ## 1. Confirm and understand the deterministic finding
 
 Open the seeded issue, draft pull request, and CodeQL result in GitHub.

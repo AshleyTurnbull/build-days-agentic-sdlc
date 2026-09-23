@@ -53,6 +53,10 @@ describe("participant lab documentation", () => {
     const normalized = content.replace(/\s+/g, " ");
 
     expect(content).toContain("https://raw.githubusercontent.com/github/gh-aw/v0.88.8/create.md");
+    expect(content).toContain("https://github.github.com/gh-aw/");
+    expect(content).toContain(
+      "https://github.blog/changelog/2026-06-11-github-agentic-workflows-is-now-in-public-preview/",
+    );
     expect(normalized).toContain("exactly one safe output");
     expect(normalized).toContain("installing or converging the extension to that version when necessary");
     expect(normalized).toContain("Do not use `main` or `latest`");
@@ -83,5 +87,39 @@ describe("participant lab documentation", () => {
     expect(read("scripts/seed-security-exercise.ps1")).toContain(
       "<!-- workshop-lab5-codeql-exercise -->",
     );
+  });
+
+  it("publishes the curated workshop reference set", () => {
+    const resources = read("docs/resources.md");
+
+    for (const url of [
+      "https://github.github.com/gh-aw/",
+      "https://github.blog/changelog/2026-06-11-github-agentic-workflows-is-now-in-public-preview/",
+      "https://openspec.dev/",
+      "https://github.com/github/spec-kit",
+      "https://github.blog/ai-and-ml/github-copilot/how-to-bring-your-software-delivery-workflow-into-github-with-agent-apps/",
+      "https://agenticsdlc.github.io/agentic-sdlc-ops/",
+      "https://danielmeppiel.github.io/agentic-sdlc-handbook/",
+    ]) {
+      expect(resources).toContain(url);
+    }
+
+    expect(resources).toContain("## Canonical hands-on references");
+    expect(resources).toContain("recommended further reading");
+    expect(resources).toContain("not additional required frameworks");
+    expect(read("README.md")).toContain("docs/resources.md");
+    expect(read("docs/README.md")).toContain("resources.md");
+  });
+
+  it("keeps Spec Kit comparison-only in the participant path", () => {
+    const lab = read("docs/labs/01-openspec-and-harness.md");
+    const comparison = read("docs/comparisons/spec-kit-to-openspec.md");
+
+    expect(lab).toContain("OpenSpec is the canonical hands-on SDD path");
+    expect(lab).toContain("../comparisons/spec-kit-to-openspec.md");
+    expect(lab).not.toContain("https://github.com/github/spec-kit");
+    expect(comparison).toContain("https://github.com/github/spec-kit");
+    expect(comparison).toContain("Do not install Spec Kit");
+    expect(comparison).toContain("add `.specify/`");
   });
 });

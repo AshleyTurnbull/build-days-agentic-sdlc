@@ -54,3 +54,10 @@ their generated lock workflows.
 - **WHEN** GH-AW Markdown is modified
 - **THEN** validation detects a missing or stale generated lock and provides
   the compile action needed to restore consistency
+
+#### Scenario: Participant consults current GH-AW documentation
+
+- **WHEN** the GH-AW home page or public-preview announcement is used for
+  orientation or status
+- **THEN** generation still uses the repository's exact pinned creation guide,
+  compiler version, source/lock validation, and narrow safe-output contract

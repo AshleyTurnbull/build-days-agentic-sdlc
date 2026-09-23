@@ -19,6 +19,13 @@ workflow and SHALL connect participant intent to repository-owned context.
   workshop path are clear without installing Spec Kit or adding a second
   specification workflow
 
+#### Scenario: Participant consults external SDD references
+
+- **WHEN** official OpenSpec or Spec Kit material is linked
+- **THEN** OpenSpec is identified as the canonical hands-on path and Spec Kit
+  remains comparison-only without installation, `.specify/`, or parallel
+  implementation artifacts
+
 ### Requirement: Non-solution examples
 
 The starter SHALL include a compact completed OpenSpec example and AVM guidance
@@ -87,3 +94,9 @@ not require attendees to execute terminal or shell procedures.
   security-sensitive boundary, or prepares merge or deployment
 - **THEN** it stops for participant review rather than treating the prompt as
   approval
+
+#### Scenario: Participant reads broader methodology guidance
+
+- **WHEN** optional community Agentic SDLC resources are linked
+- **THEN** they are separated from execution instructions and cannot redefine
+  repository requirements, permissions, version pins, or completion evidence

@@ -1,9 +1,10 @@
 # Spec Kit to OpenSpec concept map
 
-This is a comparison aid for participants who know Spec Kit. The workshop uses
-OpenSpec as its only hands-on specification-driven development workflow. Do not
-install Spec Kit, add `.specify/`, generate parallel artifacts, or create a
-second implementation branch.
+This is a comparison aid for participants who know
+[GitHub Spec Kit](https://github.com/github/spec-kit). The workshop uses
+[OpenSpec](https://openspec.dev/) as its only hands-on specification-driven
+development workflow. Do not install Spec Kit, add `.specify/`, generate
+parallel artifacts, or create a second implementation branch.
 
 | Delivery concern | Spec Kit concept | OpenSpec workshop artifact |
 |---|---|---|
@@ -41,3 +42,5 @@ seeded issue -> OpenSpec change -> specification review -> bounded tasks
 ```
 
 Continue with [Lab 1](../labs/01-openspec-and-harness.md).
+The broader [workshop resources](../resources.md) page separates canonical
+references from optional further reading.

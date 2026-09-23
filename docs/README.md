@@ -6,6 +6,7 @@ Repository documentation is organized for progressive disclosure. Keep this file
 
 - [`workshop-model.md`](workshop-model.md) - participant repository model and lab outputs.
 - [`aidlc-positioning.md`](aidlc-positioning.md) - mapping from familiar AI-DLC concepts to the workshop's GitHub-native implementation.
+- [`resources.md`](resources.md) - canonical workshop references, official GitHub context, and broader Agentic SDLC reading.
 - [`comparisons/spec-kit-to-openspec.md`](comparisons/spec-kit-to-openspec.md) - guided comparison while OpenSpec remains the canonical hands-on path.
 - [`examples/completed-openspec-example.md`](examples/completed-openspec-example.md) - compact completed example before teams author their own change.
 - [`labs/copilot-app-prompting.md`](labs/copilot-app-prompting.md) - prompt-card pattern and guidance for Chats, Plan, Interactive, Fleet, Autopilot, and sessions.

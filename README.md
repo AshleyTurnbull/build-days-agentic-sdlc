@@ -72,6 +72,7 @@ Start with these files:
 - [`AGENTS.md`](AGENTS.md) - concise map and operating contract for coding agents.
 - [`DESIGN.md`](DESIGN.md) - durable system boundaries and architectural decisions.
 - [`docs/README.md`](docs/README.md) - index of workshop and engineering documentation.
+- [`docs/resources.md`](docs/resources.md) - curated OpenSpec, Spec Kit, GH-AW, agent apps, and Agentic SDLC references.
 - [`openspec/config.yaml`](openspec/config.yaml) - OpenSpec schema, context, and artifact rules.
 - [`docs/labs/01-openspec-and-harness.md`](docs/labs/01-openspec-and-harness.md) - Lab 1 participant flow.
 - [`docs/labs/copilot-app-prompting.md`](docs/labs/copilot-app-prompting.md) - reusable GitHub Copilot App prompt-card pattern.
