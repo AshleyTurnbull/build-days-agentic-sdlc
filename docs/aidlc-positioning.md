@@ -18,6 +18,11 @@ We will build on those ideas rather than introduce a competing lifecycle. The wo
 
 The result is a delivery loop that remains visible and understandable across local agents, cloud agents, human reviewers, CI, security tools, and Azure.
 
+Participants practice that loop primarily through the GitHub Copilot App. The
+App makes the operating model visible: Chats clarify intent, Plan mode exposes
+the proposed approach, Fleet shows parallel work, Autopilot executes one
+approved goal, and isolated sessions preserve issue boundaries.
+
 ## How the concepts map
 
 | Familiar AI-DLC concept | How we will apply it | What GitHub adds |
@@ -89,7 +94,7 @@ history.
 
 ### Lab 2: visible multi-agent orchestration
 
-Agent tasks will include:
+The team uses the GitHub Copilot App to turn approved OpenSpec tasks into:
 
 - a durable issue or task reference;
 - clear ownership;
@@ -97,7 +102,10 @@ Agent tasks will include:
 - a validation contract;
 - a branch, commit, or pull-request record.
 
-This makes orchestration visible to the whole team rather than only in terminal output.
+Plan mode makes decomposition reviewable before implementation. Fleet runs
+only independent work, separate sessions keep issues isolated, and Autopilot
+demonstrates goal-oriented execution for one bounded task. This makes
+orchestration visible to the whole team rather than only in terminal output.
 
 ### Lab 3: independently verified build and deployment
 
@@ -118,6 +126,17 @@ The GH-AW exercise will use evidence produced by the earlier labs:
 4. require CodeQL and human review before merging the fix;
 5. keep merge and protected-environment approval with people or deterministic
    policy.
+
+### Optional capstone: apply the complete method to a new app
+
+Teams select a bounded brief and create a net-new application inside the same
+governed repository. They repeat intent capture, OpenSpec elaboration, issue
+decomposition, Plan approval, parallel Fleet work, a bounded Autopilot goal,
+independent Actions gates, AVM/OIDC deployment, ticket-driven bug fixing, and
+GH-AW feedback.
+
+This is the synthesis point: familiar AI-DLC concepts become connected GitHub
+objects and independently verifiable platform evidence.
 
 ## The end-of-day test
 

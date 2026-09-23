@@ -31,17 +31,24 @@ that demonstrate structure without implementing any participant-owned feature.
 - **THEN** it demonstrates proposal, scenarios, design, and tasks while leaving
   all participant feature outcomes unresolved
 
-### Requirement: Concrete App and CLI orchestration
+### Requirement: Concrete GitHub Copilot App orchestration
 
-Lab 2 SHALL provide executable Copilot App and Copilot CLI paths for delegating,
-monitoring, redirecting, and integrating bounded tasks derived from approved
-OpenSpec tasks.
+Lab 2 SHALL provide an executable GitHub Copilot App path for planning,
+delegating, monitoring, redirecting, and integrating bounded tasks derived from
+approved OpenSpec tasks.
 
 #### Scenario: Work is delegated in parallel
 
 - **WHEN** participants create bounded agent tasks
 - **THEN** each task identifies its parent issue, dependencies, non-overlapping
   owned paths, prohibited paths, acceptance scenarios, and focused validation
+
+#### Scenario: Participant selects a session mode
+
+- **WHEN** work is ambiguous, requires approval, can run independently, or is a
+  bounded autonomous goal
+- **THEN** the lab directs the participant to use Interactive, Plan, Fleet, or
+  Autopilot respectively and explains the human gate before continuing
 
 #### Scenario: Agent work leaves scope
 
@@ -55,3 +62,28 @@ OpenSpec tasks.
 - **WHEN** dependent tasks are complete
 - **THEN** participants integrate them in dependency order and record issue,
   branch, commit, test, and pull-request receipts on GitHub
+
+### Requirement: App-native participant prompts
+
+Every participant lab SHALL use short GitHub Copilot App prompt cards and SHALL
+not require attendees to execute terminal or shell procedures.
+
+#### Scenario: Participant uses a prompt card
+
+- **WHEN** a participant begins a lab step
+- **THEN** the card identifies the App surface or mode, context to attach,
+  copy-ready prompt, expected output, and next human decision
+
+#### Scenario: Validation requires repository commands
+
+- **WHEN** a lab must run tests, OpenSpec validation, compilation, security
+  checks, or deployment tooling
+- **THEN** the participant prompts the App to use the checked-in repository
+  workflow and independently reviews the resulting output or GitHub evidence
+
+#### Scenario: Participant reaches a human gate
+
+- **WHEN** the agent proposes a plan, encounters ambiguous scope, changes a
+  security-sensitive boundary, or prepares merge or deployment
+- **THEN** it stops for participant review rather than treating the prompt as
+  approval

@@ -10,6 +10,11 @@ The workshop combines three complementary practices:
 - **Harness engineering** makes the repository legible, constrained, and self-verifying for every coding agent.
 - **GitHub platform automation** connects Copilot, Actions, security scanning, Azure Verified Modules (AVM), and GitHub Agentic Workflows (GH-AW).
 
+Participant work is prompt-forward and runs through the GitHub Copilot App.
+Teams use Chats, isolated sessions, Plan mode, Interactive steering, Fleet,
+Autopilot, reviews, checks, and pull-request experiences rather than following
+terminal runbooks.
+
 ## The mental model
 
 OpenSpec and harness engineering solve different problems:
@@ -38,6 +43,10 @@ Each team still creates the workshop outcome:
 6. remediate the instructor-seeded CodeQL finding, merge the verified fix, and
    preserve the final deployment evidence.
 
+An optional 90-120 minute capstone asks teams to create a net-new application
+under `capstone/<app-name>/` using the same OpenSpec, harness, ticket-driven
+agent, Actions, AVM/OIDC, GH-AW, and evidence practices.
+
 Completed feature and evidence-workflow solutions do not belong on the template
 branch. Instructor checkpoints provide recovery without replacing participant
 work.
@@ -65,7 +74,9 @@ Start with these files:
 - [`docs/README.md`](docs/README.md) - index of workshop and engineering documentation.
 - [`openspec/config.yaml`](openspec/config.yaml) - OpenSpec schema, context, and artifact rules.
 - [`docs/labs/01-openspec-and-harness.md`](docs/labs/01-openspec-and-harness.md) - Lab 1 participant flow.
+- [`docs/labs/copilot-app-prompting.md`](docs/labs/copilot-app-prompting.md) - reusable GitHub Copilot App prompt-card pattern.
 - [`docs/features/README.md`](docs/features/README.md) - comparable feature briefs for team implementation.
+- [`docs/capstone/README.md`](docs/capstone/README.md) - optional net-new application capstone briefs.
 - [`docs/platform/README.md`](docs/platform/README.md) - GitHub, Azure, and evidence contracts.
 - [`docs/instructor/README.md`](docs/instructor/README.md) - instructor provisioning and operations runbooks.
 

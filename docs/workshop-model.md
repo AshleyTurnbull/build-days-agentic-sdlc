@@ -34,6 +34,12 @@ roles rotate between labs:
 
 Roles describe human accountability, not exclusive keyboard access.
 
+Participant labs are GitHub Copilot App-first. Teams use Chats to explore,
+Plan mode to approve significant work, Interactive mode to steer ambiguity,
+Fleet for independent tasks, Autopilot for one bounded goal, and App-native
+review, checks, and pull-request experiences. Instructor scripts remain outside
+the participant path.
+
 ## Technical-win narrative
 
 Attendees may already understand AI-DLC concepts such as intent capture, elaboration, units of work, dependency graphs, quality gates, agent roles, context recovery, and operations feedback.
@@ -57,17 +63,23 @@ See [`aidlc-positioning.md`](aidlc-positioning.md) for the detailed comparison a
 |---|---|
 | Environment check | Green environment workflow and successful Azure `what-if` |
 | OpenSpec + harness | Approved proposal, specs, design, tasks, and one scoped `AGENTS.md` improvement, with the corresponding AI-DLC concepts identified |
-| Multi-agent implementation | Independently owned tasks with testable completion contracts and GitHub-visible ownership |
+| Multi-agent implementation | Reviewed X/Y/Z task graph, isolated sessions, Fleet receipts, one bounded Autopilot goal, and GitHub-visible ownership |
 | Build and deploy | Passing feature PR, required checks, deployment URL, and Actions evidence that the agent cannot self-assert |
 | Cloud coding agent | Bounded issue, agent-created PR, and a human-requested revision without a local IDE session |
 | GH-AW + security | Agentic workflow source and lock, seeded CodeQL result, verified remediation merge, narrow safe output, and final delivery evidence |
 | Wrap | Merged PR with linked specification, security result, and deployment evidence |
+| Optional capstone | Net-new app under `capstone/<app-name>/` with its own OpenSpec, issues, CI/CD, AVM/OIDC deployment, bug-fix loop, GH-AW, and evidence |
 
-The five agenda labs plus the wrap are indexed in
+The five agenda labs plus the workshop wrap are indexed in
 [`labs/`](labs/01-openspec-and-harness.md).
 Comparable implementation choices are indexed in
 [`features/`](features/README.md). Teams select one brief; instructors should
 avoid assigning the same primary ownership area to concurrent agents.
+
+The optional 90-120 minute extension is
+[`labs/06-net-new-app-capstone.md`](labs/06-net-new-app-capstone.md). It uses
+the comparable briefs in [`capstone/`](capstone/README.md) and does not compress
+the four-hour agenda.
 
 ## Checkpoints
 

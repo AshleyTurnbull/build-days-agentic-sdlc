@@ -2,170 +2,165 @@
 
 ## Outcome
 
-Run the instructor-seeded, feature-independent operational-hardening issue
-through assignment, agent pull request, human-requested revision, updated
-checks, human approval, and merge. The issue and repository must provide enough
-context without any Lab 2 transcript.
+Use the GitHub Copilot App and GitHub browser experience to move the
+instructor-seeded operational-hardening issue through cloud-agent assignment,
+agent pull request, mandatory human revision, updated checks, and a
+human-controlled merge decision without relying on earlier chat history.
 
-Cloud-agent capability is license- and organization-dependent. A seeded issue
-does not prove the feature is available; only a successful assignment and
-observable agent run do.
+Cloud-agent capability is license- and organization-dependent. Only an
+observable assignment and run prove availability.
 
 ## Prerequisites
 
-- Labs 1-3 feature work is merged or the seeded issue is otherwise independent
-  of every open branch.
-- The instructor preparation result identifies the Lab 4 seeded issue and
-  includes a verified baseline-gap receipt.
-- The repository contains root `DESIGN.md`, applicable `AGENTS.md`, and the
-  active hardening OpenSpec scenarios.
-- The instructor has separately confirmed cloud-agent availability.
+- Labs 1-3 feature work is merged, or the seeded issue is independent of every
+  open branch.
+- The instructor preparation result identifies the seeded Lab 4 issue and its
+  verified baseline-gap receipt.
+- Root `DESIGN.md`, applicable `AGENTS.md`, and the active hardening OpenSpec
+  scenarios are present.
+- The instructor separately confirmed cloud-agent availability.
 
-Locate, but do not recreate, the seeded issue:
-
-```powershell
-gh issue list --state open --limit 100
-$Base = gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
-$CloudIssue = 0 # replace with the seeded Lab 4 issue number
-if ($CloudIssue -le 0) { throw "Set CloudIssue to the seeded Lab 4 issue." }
-gh issue view $CloudIssue --comments
-```
-
-If the issue is missing, duplicated, closed as already satisfied, or lacks a
-baseline receipt, stop and record a repository-preparation failure. Do not
-invent a participant-feature follow-up.
+Open GitHub Issues in the browser and locate, but do not recreate, the seeded
+Lab 4 issue. If it is missing, duplicated, already satisfied, or lacks its
+baseline receipt, record a preparation failure rather than inventing work.
 
 ## Universal issue path
 
-The seeded issue is independent of all four feature briefs:
+The seeded issue is independent of all participant feature briefs:
 
 > Add `Cache-Control: no-store` to the existing `/health` and `/ready` JSON
 > responses and cover the behavior in `tests/api.test.ts`.
 
-Its contract must link:
-
-- the `cloud-agent-workshop-exercise` scenarios in
-  [`harden-workshop-lab-operations`](../../openspec/changes/harden-workshop-lab-operations/specs/cloud-agent-workshop-exercise/spec.md);
-- root [`DESIGN.md`](../../DESIGN.md) and server-area instructions;
-- owned paths: `src/server/app.ts` and `tests/api.test.ts`;
-- prohibited paths: `src/client/**`, `src/shared/**`, `infra/**`,
-  `.github/workflows/**`, and participant OpenSpec changes;
-- acceptance criteria for both healthy and not-ready responses;
-- focused validation: `npm test -- tests/api.test.ts`;
-- expected issue, branch, commit, test, review, check, and pull-request receipts.
-
-Preparation must verify that the selected template revision does not already
-return the required policy. If the baseline already satisfies it, the issue is
-not actionable and the instructor must seed a newly verified replacement; the
-lab must not pretend work occurred.
+It must link the
+[`cloud-agent-workshop-exercise` scenarios](../../openspec/changes/harden-workshop-lab-operations/specs/cloud-agent-workshop-exercise/spec.md),
+root [`DESIGN.md`](../../DESIGN.md), server instructions, owned and prohibited
+paths, acceptance criteria, focused validation, and expected receipts.
 
 ## 1. Review the seeded contract
 
-Confirm the issue states:
+### Prompt card: contract review
 
-- `/health` returns `Cache-Control: no-store`;
-- `/ready` returns it for both `200` and `503` responses;
-- existing JSON body/status behavior remains unchanged;
-- focused tests cover the policy;
-- no feature, infrastructure, workflow, or credential work is allowed; and
-- a human reviewer must request the bounded revision below before approval.
+- **Use:** A fresh Copilot App session opened from the seeded issue.
+- **Attach:** The issue, linked OpenSpec scenario, root and server-area
+  instructions, and baseline-gap receipt.
+- **Prompt:** Restate this issue's acceptance criteria, owned paths, prohibited
+  paths, focused validation, and required evidence using only attached
+  repository context. Confirm that `/health` and both `200` and `503` `/ready`
+  responses require `Cache-Control: no-store` while existing JSON bodies and
+  status codes remain unchanged. Identify the mandatory human revision but do
+  not implement it early.
+- **Expect:** A bounded, feature-independent contract with no infrastructure,
+  workflow, credential, client, shared-contract, or participant-spec work.
+- **Decide:** Assign only if the issue is actionable against the recorded
+  baseline and contains enough durable context for a fresh agent.
 
-Do not paste local-agent conversation into the issue.
+## 2. Assign and observe the cloud agent
 
-## 2. Assign the cloud coding agent
+Use the issue's prepared GitHub assignment control in the browser. Record the
+assignment event on the issue; do not supply hidden context from Labs 1 or 2.
 
-Use the repository's GitHub issue assignment control prepared by the
-instructor. Record the assignment event on the issue.
+### Prompt card: cloud-agent assignment
 
-Observe, without supplying hidden chat context, whether the agent discovers the
-linked OpenSpec scenario, root and closest instructions, existing API patterns,
-owned/prohibited paths, and the real focused command.
-
-If no cloud-agent assignment control is visible or no run begins within five
-minutes, follow Recovery. Do not claim external availability based on
-documentation, a label, or an instructor expectation.
+- **Use:** GitHub's cloud coding-agent assignment flow.
+- **Attach:** The seeded issue only; its links provide the repository context.
+- **Prompt:** Implement this bounded issue. Follow the linked OpenSpec scenario,
+  root and closest instructions, owned and prohibited paths, and checked-in
+  focused validation. Open a pull request that links the issue and reports
+  validation actually run.
+- **Expect:** An observable agent run and a pull request limited to
+  `src/server/app.ts` and `tests/api.test.ts`.
+- **Decide:** If no assignment control is visible or no run starts within five
+  minutes, use Recovery and label the result as a local App fallback.
 
 ## 3. Review the initial pull request
 
-Before requesting changes, capture:
+### Prompt card: initial PR review
 
-```powershell
-gh pr view <pr-number> --json url,headRefName,commits,files,reviews,statusCheckRollup
-gh pr checks <pr-number>
-```
+- **Use:** Copilot App review from the agent-created pull request.
+- **Attach:** The seeded issue, pull-request diff, commits, checks, and linked
+  instructions.
+- **Prompt:** Review this pull request against the seeded contract. Confirm it
+  links and closes the issue, changes only owned paths, preserves existing
+  health/readiness bodies and statuses, adds focused tests, and reports
+  validation actually run. Identify policy, security, or deployment weakening.
+  Do not approve yet.
+- **Expect:** A review grounded in the diff and current checks.
+- **Decide:** Close without merge if prohibited paths are repeatedly changed.
+  Otherwise continue to the required human revision.
 
-Confirm the initial pull request:
+## 4. Request the mandatory bounded revision
 
-- links and closes the seeded issue;
-- changes only owned paths;
-- preserves existing health/readiness bodies and status codes;
-- includes focused tests and reports commands actually run; and
-- does not weaken policy, security, or deployment controls.
-
-## 4. Request the mandatory human revision
-
-Submit a pull-request review requesting this bounded, feature-independent
+Submit a visible GitHub pull-request review requesting changes. Use this exact
 revision:
 
 > Add a focused `HEAD /health` regression assertion proving the no-store
 > header is present and the response has no body. Keep the change within the
-> issue's owned paths and rerun `npm test -- tests/api.test.ts`.
+> issue's owned paths and rerun the checked-in focused API validation.
 
-The request must be visible as a human review, not only as an issue comment or
-agent prompt. Do not approve before the revision.
+### Prompt card: revision response
 
-## 5. Verify revision and merge evidence
+- **Use:** The cloud-agent continuation control on the pull request.
+- **Attach:** The human review thread and current pull-request diff.
+- **Prompt:** Address only the requested `HEAD /health` regression assertion,
+  keep changes within the issue's owned paths, run the checked-in focused API
+  validation, and update the pull request with the result. Do not broaden the
+  issue.
+- **Expect:** A newer commit, a resolved review conversation, and checks for
+  that newer commit.
+- **Decide:** Do not approve until the revision is visible in the diff and the
+  updated focused and required checks pass.
 
-After the agent updates the pull request:
+## 5. Make the human merge decision
 
-```powershell
-gh pr view <pr-number> --json url,commits,files,reviews,statusCheckRollup
-gh pr checks <pr-number>
-gh pr checkout <pr-number>
-git --no-pager diff --check "$Base...HEAD"
-```
+### Prompt card: final evidence review
 
-Verify that:
-
-- a newer commit addresses the human review;
-- `GET /health`, successful `GET /ready`, unavailable `GET /ready`, and
-  `HEAD /health` are covered;
-- focused and required checks are updated for the new commit;
-- the review conversation shows the requested revision was resolved; and
-- a human, not the agent, approves and merges.
-
-Record the merge commit and final checks on the seeded issue.
+- **Use:** A fresh Copilot App review session and the GitHub pull-request page.
+- **Attach:** The issue, final diff, commit list, review thread, and updated
+  check results.
+- **Prompt:** Verify coverage for `GET /health`, successful `GET /ready`,
+  unavailable `GET /ready`, and `HEAD /health`; confirm the requested revision
+  is in a newer commit; and confirm checks apply to the current head. Summarize
+  evidence and remaining risks. Do not approve or merge.
+- **Expect:** A current-head evidence summary with no reliance on the original
+  agent conversation.
+- **Decide:** A human approves and merges, or requests another bounded fix.
+  Record the merge commit and final checks on the seeded issue.
 
 ## Expected repository artifacts
 
 - One preparation-seeded universal issue with a baseline-gap receipt.
 - Observable cloud-agent assignment and agent-created pull request.
 - Human review requesting the specified bounded revision.
-- Updated agent commit and checks.
+- Updated agent commit, resolved review, and current-head checks.
 - Human approval and merge receipt.
 
 ## Verification
 
-A teammate who did not run Labs 1 or 2 must be able to explain the complete
-issue-to-revision-to-merge path using only the issue, repository instructions,
+A teammate who did not run earlier labs must be able to reconstruct the entire
+issue-to-revision-to-merge path from the issue, repository instructions,
 OpenSpec link, diff, reviews, checks, and merge commit.
 
 ## Recovery
 
 If the cloud agent is unavailable or cannot start within five minutes:
 
-1. comment on the seeded issue with the exact unavailable or blocked state;
-2. assign the same issue to a fresh local Copilot App or CLI session with no
-   copied chat history;
-3. preserve the same human review and merge gates;
-4. label the receipt as a local fallback, not a cloud-agent run.
+### Prompt card: fresh App fallback
 
-If the agent repeatedly changes prohibited paths, close its pull request
-without merging and use the instructor-published `lab4-start` checkpoint.
-Do not force-push the agent branch into compliance.
+- **Use:** A new Copilot App session with no copied chat history.
+- **Attach:** The same seeded issue and its repository links.
+- **Prompt:** Implement this issue from durable repository context only. Respect
+  owned and prohibited paths, run the checked-in focused validation, and open
+  or prepare the same reviewable pull-request evidence. Do not use hidden
+  context from another session.
+- **Expect:** The same bounded implementation and evidence, explicitly labeled
+  as a local Copilot App fallback rather than a cloud-agent run.
+- **Decide:** Preserve the mandatory human review and merge gates. If repeated
+  prohibited-path changes continue, close the pull request and use the
+  instructor-published `lab4-start` checkpoint without force-pushing the agent
+  branch.
 
 ## Stretch
 
 Remove redundant issue prose while preserving authoritative links, ownership,
-acceptance criteria, validation, and evidence, then test whether a fresh local
-session can restate the complete contract.
+acceptance criteria, validation, and evidence. Ask another fresh App session to
+restate the complete contract from the shortened issue.

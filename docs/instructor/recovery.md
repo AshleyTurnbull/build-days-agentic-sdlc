@@ -146,3 +146,20 @@ for consistent attribution.
 Before the event, publish every named checkpoint into a disposable team
 repository, complete the next lab, and verify that no later answer is exposed.
 A checkpoint is not approved merely because its branch can be created.
+
+## Optional capstone recovery
+
+The optional capstone does not add a completed application checkpoint to the
+public template or participant repository. Before the extension, record the
+team's last verified pre-capstone commit and selected brief. If capstone work
+becomes unrecoverable:
+
+1. preserve every capstone issue, session, branch, pull request, and failed run;
+2. create a new recovery branch from the recorded pre-capstone commit;
+3. restore only the selected brief and empty `capstone/<app-name>/` boundary;
+4. label any instructor-provided state as `instructor-recovery`; and
+5. restart from Plan mode without copying hidden solution context.
+
+Do not publish a completed capstone implementation as recovery. Partial,
+honestly labeled evidence is preferable to replacing the team's synthesis
+work.

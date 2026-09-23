@@ -20,6 +20,14 @@ the same team-repository path used for participants.
 - **THEN** event readiness remains blocked and the overrun and responsible step
   are recorded for remediation
 
+#### Scenario: Optional capstone is rehearsed
+
+- **WHEN** the optional capstone is advertised for the event or a follow-up
+  session
+- **THEN** a separate 90-120 minute rehearsal proves App-native Plan, Fleet,
+  Autopilot, capstone-scoped CI/CD, AVM/OIDC deployment, ticket-driven defect
+  remediation, GH-AW output, and honestly labeled partial-completion recovery
+
 ### Requirement: Evidence-based go/no-go
 
 Workshop readiness SHALL require successful required controls and SHALL

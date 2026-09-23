@@ -40,12 +40,12 @@
   artifacts, root design, co-located instructions, and AVM review; validate all
   documented commands and links.
 
-## 4. Concrete Copilot App and CLI orchestration
+## 4. Concrete GitHub Copilot App orchestration
 
 - [x] 4.1 Seed the reusable parent/task issue structure while leaving feature
   decomposition and assignment to participants.
-- [x] 4.2 Document and test bounded Copilot App session and Copilot CLI task
-  flows with non-overlapping path ownership and explicit dependencies.
+- [x] 4.2 Document and test bounded Copilot App session flows with reviewed
+  mode selection, non-overlapping path ownership, and explicit dependencies.
 - [x] 4.3 Define monitoring, scope redirection, dependency-order integration,
   and issue receipts for branch, commit, focused test, and pull request.
 - [ ] 4.4 Dry-run Lab 2 with at least two bounded tasks and verify GitHub
@@ -126,3 +126,21 @@
 - [ ] 10.5 Record go/no-go evidence, including App Service quota, immutable
   OIDC, Azure `what-if`, live deployment and smoke tests, elapsed time,
   blockers, and explicitly labeled platform fallbacks.
+
+## 11. App-native prompts and optional capstone
+
+- [x] 11.1 Add a GitHub Copilot App prompting guide covering Chat, Plan,
+  Interactive, Fleet, Autopilot, isolated sessions, review, checks, and
+  pull-request evidence.
+- [x] 11.2 Rewrite Labs 1-5 and the workshop wrap as prompt-card journeys with
+  `Use`, `Attach`, `Prompt`, `Expect`, and `Decide`, and remove participant
+  terminal command blocks.
+- [x] 11.3 Rebuild Lab 2 around reviewed X/Y/Z ownership, Plan mode, Fleet for
+  independent work, scope redirection, a separate Autopilot goal, and App-native
+  integration.
+- [x] 11.4 Add the `workshop-capstone` capability, repository boundary, four
+  comparable briefs, and an optional App-led net-new application lab.
+- [x] 11.5 Align workshop navigation, AI-DLC positioning, and instructor
+  readiness while keeping operational scripts instructor-only.
+- [x] 11.6 Add structural documentation tests and validate OpenSpec, links,
+  prompt references, application checks, and diff hygiene.

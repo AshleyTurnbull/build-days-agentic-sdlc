@@ -66,6 +66,9 @@ not print tokens or variable values. Do not commit event-specific output.
 | Deployment | Protected deployment completes | Deployment URL |
 | Runtime | Health, readiness, feedback, and voting pass | Job summary |
 | Copilot App | Manual sign-in and repository-open check | Instructor roster |
+| App sessions | Chat plus isolated local/worktree session creation | Instructor roster and test sessions |
+| App modes | Interactive, Plan, and Autopilot available | Test session evidence |
+| Fleet | Parallel task command available and completes bounded test work | Test session evidence |
 | Cloud agent | Issue assignment, revision, and PR creation work | Test issue/PR |
 | GH-AW | Source/lock valid and safe output produced | Run URL |
 | Recovery | Every published checkpoint resolves | Branch list |
@@ -81,8 +84,25 @@ Do not advertise a preferred path when:
   be proven;
 - required checks cannot run under organization policy;
 - Copilot App, cloud-agent, or GH-AW access is assumed rather than tested;
+- the App cannot create isolated sessions or use Plan, Fleet, and Autopilot for
+  the tested repository;
 - recovery checkpoints are missing; or
 - cleanup ownership is undefined.
 
 Record unsupported licensed controls and fallbacks accurately. A manual or
 fallback result is not equivalent to platform enforcement.
+
+## Optional capstone readiness
+
+Rehearse the optional capstone separately from the four-hour agenda. Confirm:
+
+- the `capstone/` boundary and one selected brief are understandable to a fresh
+  App session;
+- Plan mode produces a non-overlapping issue graph;
+- Fleet can run two independent capstone tasks;
+- Autopilot can complete one bounded capstone goal without touching the
+  feedback application;
+- capstone-scoped CI, AVM/OIDC deployment, bug-fix, and GH-AW paths produce
+  durable evidence; and
+- the full path fits the advertised 90-120 minute extension or has a clearly
+  labeled partial-completion outcome.

@@ -2,186 +2,201 @@
 
 ## Outcome
 
-Remediate the instructor-seeded, non-production CodeQL finding, then author and
-compile a GitHub Agentic Workflow that reviews the real security,
-specification, pull-request, and deployment evidence through one narrowly
-authorized output.
+Use GitHub Copilot App to understand and remediate the instructor-seeded
+non-production CodeQL finding, perform a security review, and create a GitHub
+Agentic Workflow that evaluates real security and delivery evidence through
+exactly one narrowly authorized safe output.
 
 ## Prerequisites
 
-- Labs 1 through 4 produced a linked OpenSpec change, implementation pull
-  request, independent checks, and deployment record.
-- The instructor ran `scripts/seed-security-exercise.ps1`. You have a sanitized
-  issue and a draft pull request on `workshop/lab5-codeql-exercise`; the
-  vulnerable fixture is not on the default branch.
-- The instructor confirmed GH-AW and model access for the repository.
-- The repository's `issue-clarifier` and `failed-test-explainer` references
-  compile and can be inspected as working safe patterns.
-- The participant starter is available at
+- Labs 1-4 produced linked OpenSpec, pull-request, check, review, and deployment
+  evidence.
+- The instructor seeded a sanitized issue and draft pull request on
+  `workshop/lab5-codeql-exercise`.
+- The instructor confirmed CodeQL, GH-AW, and model access.
+- The `issue-clarifier` and `failed-test-explainer` source/lock pairs compile.
+- The participant starter is
   [`starters/evidence-review.md`](starters/evidence-review.md).
 
-GH-AW availability and runner/model authorization are external setup. Do not
-represent a locally simulated summary as a GH-AW run.
+GH-AW availability and runner/model authorization are external setup. A local
+summary is not a GH-AW run.
 
-## 1. Confirm the deterministic finding
+## 1. Confirm and understand the deterministic finding
 
-Open the seeded issue, draft pull request, and CodeQL check. Confirm:
+Open the seeded issue, draft pull request, and CodeQL result in GitHub.
 
-- the finding is `js/command-line-injection` in
-  `tests/security-exercise/unsafe-command.ts`;
-- the fixture contains synthetic input only and is outside `src`;
-- the default branch does not contain the generated fixture; and
-- CodeQL ran through the normal pull-request trigger rather than a simulated
-  result.
+### Prompt card: CodeQL understanding
 
-Do not continue if CodeQL was skipped or the expected finding is absent. Record
-that as incomplete security evidence and use the recovery path.
+- **Use:** Copilot App from the seeded draft pull request.
+- **Attach:** The sanitized issue, CodeQL alert, pull-request diff, deterministic
+  security OpenSpec scenario, and `tests/security-exercise/unsafe-command.ts`.
+- **Prompt:** Explain why this synthetic fixture triggers
+  `js/command-line-injection`, identify the untrusted-data-to-command path, and
+  distinguish scanner evidence from an agent claim. Confirm the fixture is
+  outside `src`, excluded from application build and deployment, absent from
+  the default branch, and contains no secret or production exploit. Do not
+  suppress or disable the query.
+- **Expect:** A finding explanation tied to the exact alert and isolated
+  non-production fixture.
+- **Decide:** Continue only if the normal pull-request CodeQL run reports the
+  expected finding. Otherwise record incomplete security evidence and use
+  Recovery.
 
-## 2. Apply the small remediation
+## 2. Apply and verify the narrow remediation
 
-On the exercise branch, replace the fixture with the inert safe reference:
+### Prompt card: CodeQL remediation
 
-```powershell
-Copy-Item `
-  .\docs\labs\starters\security-exercise\remediated-command.ts.txt `
-  .\tests\security-exercise\unsafe-command.ts
+- **Use:** A Copilot App session in the seeded exercise branch.
+- **Attach:** The alert, unsafe fixture, approved inert reference at
+  `docs/labs/starters/security-exercise/remediated-command.ts.txt`, issue
+  acceptance criteria, and closest instructions.
+- **Prompt:** Replace the synthetic unsafe fixture with the approved inert
+  reference, without changing application code, workflow configuration, query
+  settings, or suppressions. Run the checked-in focused type and diff
+  validation, show the exact diff, and update the draft pull request.
+- **Expect:** One small fixture remediation and updated required checks.
+- **Decide:** Keep the pull request in draft until CodeQL no longer reports the
+  expected alert and required checks pass.
 
-npm run typecheck
-git --no-pager diff --check
-git add .\tests\security-exercise\unsafe-command.ts
-git commit -m "Remediate Lab 5 command injection fixture"
-git push
-```
+### Prompt card: security review
 
-Wait for the pull-request checks. The exercise is remediated only when the
-expected CodeQL alert is absent and required checks pass without a query
-suppression. Keep the pull request in draft until that evidence is visible.
+- **Use:** A fresh Copilot App review session.
+- **Attach:** The original alert, remediated diff, updated CodeQL result,
+  required checks, and linked OpenSpec scenario.
+- **Prompt:** Review whether the command-injection data flow was removed rather
+  than hidden. Confirm no query suppression, scanner disablement, unrelated
+  authority, secret, or deployable vulnerable code was introduced. Report any
+  remaining gap and do not approve or merge.
+- **Expect:** A narrow review grounded in the before-and-after scanner evidence.
+- **Decide:** A human may merge only when the expected finding is absent and
+  current-head required checks pass.
 
-## 3. Compare both safe references
+## 3. Study the two safe GH-AW references
 
-Read these source/lock pairs:
+In Copilot App, compare:
 
-- `.github/workflows/issue-clarifier.md` uses manual issue input, issue-reading
+- `.github/workflows/issue-clarifier.md`: manual issue input, issue-reading
   tools, and one bounded comment.
-- `.github/workflows/failed-test-explainer.md` uses a completed-CI trigger,
+- `.github/workflows/failed-test-explainer.md`: completed-CI trigger,
   Actions-reading tools, and at most one follow-up issue.
 
-Identify each trigger, read permission, toolset, and safe output. The references
-demonstrate patterns only; neither is the Lab 5 answer.
+### Prompt card: reference comparison
 
-## 4. Author the security-and-delivery workflow
+- **Use:** Copilot App.
+- **Attach:** Both Markdown sources and generated lock workflows.
+- **Prompt:** Compare each trigger, read permission, toolset, and single safe
+  output. Explain which patterns are reusable for a security-and-delivery
+  evidence review and which content would incorrectly copy a solution.
+- **Expect:** A concise pattern comparison; neither reference becomes the Lab 5
+  answer.
+- **Decide:** Proceed only when the team can explain narrow authority and
+  source/lock reproducibility.
 
-Copy the participant starter into the active workflows directory:
+## 4. Create the security-and-delivery GH-AW
 
-```powershell
-Copy-Item `
-  .\docs\labs\starters\evidence-review.md `
-  .\.github\workflows\security-delivery-review.md
-```
+Use the pinned workshop creation guide:
+<https://raw.githubusercontent.com/github/gh-aw/v0.88.8/create.md>.
+The pinned guide may direct Copilot to read further official upstream
+documentation; follow those official reads when required.
 
-Complete the single `TODO` by declaring exactly one narrow safe output. Author
-the evaluation instructions so the workflow reads the seeded issue and pull
-request, linked OpenSpec scenario, required checks, CodeQL result, and
-pull-request-linked Azure deployment evidence.
+### Prompt card: propose before files
 
-Before compiling it, identify:
+- **Use:** A fresh Copilot App session.
+- **Attach:** The pinned creation guide, participant starter, both safe
+  references, linked evidence contract, seeded security issue and pull request,
+  deployment evidence, and active GH-AW OpenSpec scenarios.
+- **Prompt:** Create a GH-AW using the approved creation guide. Its purpose is
+  triage and security-delivery evidence. Before creating or changing files,
+  propose the trigger, read permissions, tools, evidence sources, and exactly
+  one safe output. Keep authority narrow: it must not approve, merge, bypass
+  rules, edit protected workflows, deploy, or write anything beyond that one
+  output. Wait for the human decision on the proposal before authoring.
+- **Expect:** A reviewable design proposal before any file change.
+- **Decide:** Approve, revise, or reject the proposed trigger, permissions,
+  tools, and single output. Do not continue with broad or ambiguous authority.
 
-- event or manual trigger;
-- read permissions;
-- the single declared safe write output;
-- evidence sources;
-- prohibited authority.
+### Prompt card: author and generate
 
-The workflow must not approve, merge, bypass rules, edit protected workflows,
-or deploy. Its job is to report whether evidence is complete, not to grant the
-approval itself.
+- **Use:** The same Copilot App session after human approval.
+- **Attach:** The approved proposal and
+  `docs/labs/starters/evidence-review.md`.
+- **Prompt:** Author `.github/workflows/security-delivery-review.md` from the
+  participant starter so it evaluates the seeded issue and pull request,
+  CodeQL result, linked OpenSpec scenario, required checks, and pull-request
+  deployment evidence. Declare exactly the approved safe output. Use the
+  installed GH-AW tooling and approved guide to generate and validate the lock
+  workflow. Never hand edit generated lock files. Report source and generated
+  files together with validation results.
+- **Expect:** Team-authored Markdown and compiler-generated lock workflow in
+  sync, with one declared safe output.
+- **Decide:** Reject any result that hand edits the lock, adds unrelated write
+  permissions, or claims evidence that was not read.
 
-## 5. Compile and confirm source/lock consistency
+The existing repository integrity workflow discovers workflow Markdown through
+its wildcard behavior; no workflow-list edit is required.
 
-Use the GH-AW CLI command documented with the checked-in workflow to compile or
-validate the Markdown source. Tooling syntax can vary by installed GH-AW
-version, so use the repository guidance and `gh aw --help` rather than guessing.
+## 5. Run and review real evidence
 
-```powershell
-gh aw compile security-delivery-review `
-  --no-check-update `
-  --action-mode action `
-  --action-tag 5e508589e03a7757a7e05b26e834292f5445bfb6
-gh aw validate security-delivery-review --no-check-update
-git --no-pager diff --check
-```
+### Prompt card: evidence evaluation
 
-If source changes, the generated lock workflow must change in the same pull
-request. Do not edit the generated lock file by hand.
-
-Commit both the authored Markdown and compiler-generated lock workflow.
-
-The repository integrity workflow compiles every
-`.github/workflows/*.md` source through its existing wildcard behavior, so no
-workflow-list edit is required.
-
-## 6. Run against real evidence
-
-Provide the pull request or issue reference expected by the checked-in
-workflow. The evaluation should compare:
-
-1. linked OpenSpec requirements and scenarios;
-2. required check results;
-3. security result or documented availability fallback;
-4. Azure deployment evidence and live URL.
-
-## 7. Review the safe output
-
-For complete evidence, the output should be concise and point to the artifacts.
-For incomplete or inconsistent evidence, it should identify the gap without
-claiming the change is complete.
-
-Verify that the output does not expose credentials, fabricate unavailable
-checks, or imply merge/deployment authority.
+- **Use:** The GitHub GH-AW run flow and Copilot App for review.
+- **Attach:** The input issue or pull request, linked OpenSpec scenario,
+  current-head required checks, resolved CodeQL evidence, deployment artifact,
+  and marked deployment comment.
+- **Prompt:** Run the authored workflow against these real records. Evaluate
+  consistency across specification, checks, security remediation, deployed
+  commit, and Azure evidence. Produce only the declared safe output. If
+  evidence is missing or inconsistent, report the gap without claiming
+  completion or changing protected state.
+- **Expect:** One concise output pointing to durable artifacts, or one concise
+  gap report.
+- **Decide:** A human reviews the run permissions, tools, evidence links, and
+  output before accepting it as Lab 5 evidence.
 
 ## Expected repository artifacts
 
-- Safely remediated draft pull request with the original and resolved CodeQL
+- Safely remediated draft pull request with original and resolved CodeQL
   evidence.
 - Team-authored GH-AW Markdown source and generated lock workflow in sync.
 - Run URL and input issue or pull-request reference.
-- One declared safe output, such as a concise evidence comment or follow-up
-  issue.
-- Human review of the result.
+- Exactly one declared safe output.
+- Human review of the security fix and GH-AW result.
 
 ## Verification
 
-```powershell
-gh run list --limit 20
-gh pr checks <SECURITY_PR_NUMBER>
-gh aw validate --no-check-update
-git --no-pager diff --check
-```
-
-Open the selected run and confirm the permissions and output match the
-repository source.
+Open the selected security and GH-AW runs in GitHub. Confirm current-head
+required checks, disappearance of the expected CodeQL finding without
+suppression, source/lock consistency produced by the installed compiler, and
+permissions matching the Markdown source. Ask Copilot App to run the
+repository's checked-in GH-AW validation and diff check; participants should
+not type terminal commands or hand edit locks.
 
 ## Recovery
 
 If the expected CodeQL result is absent after ten minutes, confirm the fixture
-is on a draft pull request under `tests/security-exercise`, ask the instructor
-to rerun `scripts/seed-security-exercise.ps1`, and do not substitute a manual
-claim for scanner evidence.
+is on the seeded draft pull request under `tests/security-exercise`, ask the
+instructor to rerun the seeding automation, and do not substitute a manual
+claim.
 
-If GH-AW access or compilation is unavailable after ten minutes:
+If GH-AW access or generation is unavailable after ten minutes:
 
-1. record the exact availability or tooling limitation;
-2. inspect the checked-in source and lock workflow;
-3. manually perform the same evidence comparison using
-   [`../platform/evidence-contract.md`](../platform/evidence-contract.md);
-4. label the result as a manual fallback, not a GH-AW run.
+### Prompt card: labeled manual fallback
 
-If a generated lock file is stale, restore the pre-Lab-5 checkpoint, keep the
-team's Markdown source, and compile it again rather than hand-editing generated
-YAML.
+- **Use:** A fresh Copilot App session.
+- **Attach:** The checked-in source and lock references, the team's Markdown if
+  available, and the
+  [delivery evidence contract](../platform/evidence-contract.md).
+- **Prompt:** Perform the same read-only security-and-delivery evidence
+  comparison, identify the exact GH-AW availability or tooling limitation, and
+  label the result as a manual fallback. Do not simulate a run, hand edit a
+  generated lock, or claim equivalent platform enforcement.
+- **Expect:** A clearly labeled manual review and preserved limitation.
+- **Decide:** If a generated lock is stale, restore the pre-Lab-5 checkpoint,
+  keep the team's Markdown source, and regenerate with the approved tooling
+  when available.
 
 ## Stretch
 
 Remove one nonessential evidence link from a test pull request and verify that
-the workflow reports the missing evidence without attempting to repair,
-approve, merge, or deploy the change.
+the workflow reports the missing evidence without repairing, approving,
+merging, or deploying.

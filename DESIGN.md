@@ -146,10 +146,16 @@ approvals, health/readiness probes, and the focused feedback smoke test.
 ## Workshop constraints
 
 - The local environment check must complete before Lab 1.
+- Participant labs use the GitHub Copilot App as the primary interface. Chats,
+  Plan, Interactive, Fleet, Autopilot, sessions, reviews, checks, and pull
+  requests teach the workflow; terminal procedures remain instructor
+  operations or agent-executed validation.
 - Focused tests should return actionable results within two minutes.
 - The standard Azure deployment path should complete within the Lab 3 window.
 - Every lab has a happy path, recovery checkpoint, and optional stretch goal.
 - Starter tasks are intentionally separable to demonstrate parallel agents without merge contention.
+- Fleet is used only after shared dependencies and non-overlapping primary
+  ownership are reviewed.
 
 ## Workshop operations
 
@@ -181,6 +187,13 @@ implementation pull request linked to its approved OpenSpec change, independent
 CI/security/deployment evidence, and a GH-AW evidence review with narrow
 authority. A reviewer must be able to reconstruct the issue-to-deployment story
 without access to the originating agent conversations.
+
+An optional 90-120 minute capstone extends the workshop without compressing the
+four-hour agenda. Teams create a net-new application under
+`capstone/<app-name>/` with independent source, tests, CI/CD, AVM/OIDC
+deployment, issue-driven defect remediation, GH-AW feedback, and evidence. The
+existing feedback application remains unchanged and completed capstone
+solutions do not ship on the public template default branch.
 
 Licensing-dependent controls such as CodeQL, dependency review, protected
 environments, cloud agents, and GH-AW are confirmed during instructor readiness.

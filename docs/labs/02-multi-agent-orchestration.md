@@ -1,225 +1,193 @@
-# Lab 2: Visible multi-agent orchestration
+# Lab 2: Multi-agent orchestration in GitHub Copilot App
 
 ## Outcome
 
-Turn approved OpenSpec tasks into bounded GitHub work, run at least two
-non-overlapping tasks through Copilot App and Copilot CLI, intervene when
-needed, and integrate in dependency order using GitHub receipts rather than
-agent transcripts.
+Use GitHub Copilot App sessions, Plan mode, Fleet, Interactive steering, and
+Autopilot to turn approved OpenSpec tasks into visible, bounded work. Integrate
+the results in dependency order using GitHub issues, branches, checks, reviews,
+and pull requests rather than agent transcripts.
+
+Use the [App prompting pattern](copilot-app-prompting.md) throughout this lab.
 
 ## Prerequisites
 
 - The Lab 1 specification pull request is approved.
-- The instructor-seeded parent feature issue is open.
-- The active change has approved scenarios and `tasks.md`.
-- `gh auth status`, `copilot --version`, and `git status` succeed.
-- Each participant can create issues, branches, commits, and pull requests.
+- The seeded parent feature issue links the approved OpenSpec change.
+- The App can create isolated sessions for the team repository.
+- Each task can name owned paths, prohibited paths, dependencies, focused
+  validation, and durable completion receipts.
 
-```powershell
-gh auth status
-copilot --version
-git --no-pager status --short
-$Base = gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
-$ParentIssue = 0 # replace with the seeded parent feature issue number
-if ($ParentIssue -le 0) { throw "Set ParentIssue to the seeded parent issue." }
-gh issue view $ParentIssue --comments
-```
+## 1. Plan the X/Y/Z workstreams
 
-Repository preparation seeds the parent work item. Participants own task
-decomposition, assignment, and integration; do not wait for a setup script to
-invent those decisions.
+**Use:** A new isolated session in Plan mode.
 
-## 1. Build a testable task graph
+**Attach:** `#<parent-feature-issue>`, the approved OpenSpec proposal, specs,
+design, tasks, `@DESIGN.md`, and applicable `AGENTS.md` files.
 
-Select at least two approved `tasks.md` items. A safe shape is one authoritative
-contract task followed by independent API and UI consumers, or two independent
-test/documentation tasks. Do not assign two active tasks the same primary file.
+**Prompt:**
 
-Create each task issue with this contract:
+> Turn the approved OpenSpec tasks for #<parent-feature-issue> into a GitHub
+> issue graph with three bounded goals:
+>
+> - X: shared contract and API behavior;
+> - Y: React user experience, loading, empty, error, and accessibility states;
+> - Z: focused tests, documentation, and integration evidence.
+>
+> Identify dependencies, owned and prohibited paths, focused validation, and
+> done receipts for each goal. Shared contracts must stabilize before dependent
+> work. Do not implement anything and stop if two goals need the same primary
+> file.
 
-```markdown
-Parent: #<parent>
-OpenSpec change: openspec/changes/<change-name>/
-Scenarios: <requirement and scenario names>
+**Expect:** A dependency graph that distinguishes serial foundation work from
+independent work suitable for Fleet.
 
-Owned paths:
-- <path or narrow glob>
+**Decide:** Edit the plan until ownership does not overlap. Approve the graph,
+not implementation.
 
-Prohibited paths:
-- <path or narrow glob>
+## 2. Create durable task issues
 
-Depends on:
-- #<issue>, or "none"
+**Use:** The same session in Interactive mode with GitHub issue tools.
 
-Focused validation:
-- `<exact command>`
+**Attach:** The approved X/Y/Z plan and parent issue.
 
-Done receipts:
-- branch
-- commit SHA
-- focused test output
-- pull request
-```
+**Prompt:**
 
-Use `gh issue create --web` or your repository's issue UI so the contract can
-be reviewed before assignment. Then add the task links and dependency order to
-the seeded parent issue:
+> Create or prepare three task issues from the approved X/Y/Z plan. Each issue
+> must link the parent issue and exact OpenSpec scenarios, state owned and
+> prohibited paths, list dependencies, name focused validation, and require
+> branch, commit, checks, review, and pull-request receipts. Add the dependency
+> order back to the parent issue. Stop before assigning or implementing work.
 
-```powershell
-gh issue view $ParentIssue --web
-gh issue list --state open --limit 50
-```
+**Expect:** Reviewable task issues whose contracts are understandable without
+the App conversation.
 
-Stop if ownership overlaps. Split by stable contracts or serialize the tasks.
+**Decide:** Confirm issue scope and dependency order before starting sessions.
 
-## 2. Run one task in Copilot App
+## 3. Stabilize shared work interactively
 
-From the repository root:
+**Use:** A separate isolated session for goal X in Interactive mode.
 
-```powershell
-copilot app
-```
+**Attach:** `#<x-issue>`, the approved OpenSpec scenarios, shared contracts,
+server instructions, and focused tests.
 
-In Copilot App:
+**Prompt:**
 
-1. create a new session for this repository and select an isolated worktree;
-2. name it `issue-<number>-<short-name>`;
-3. paste the task issue URL and this instruction:
+> Implement only #<x-issue>. First restate the accepted behavior, dependency
+> impact, owned paths, prohibited paths, and validation. Ask me about any
+> ambiguity before editing. Keep the contract and API change minimal, run the
+> issue's focused validation, and stop with the diff and real results for my
+> review.
 
-   ```text
-   Implement only this issue. Read root DESIGN.md, root and closest AGENTS.md,
-   and the linked OpenSpec artifacts first. Stay inside owned paths, do not
-   touch prohibited paths, run the named focused validation, and stop with the
-   branch, commit, test, and pull-request receipts.
-   ```
+**Expect:** A focused contract/API diff and passing focused evidence, or an
+honest blocker.
 
-4. before accepting edits, inspect the session's changed-file list and task
-   progress;
-5. use the App's message box to redirect scope, or Stop if the agent continues
-   outside the issue contract.
+**Decide:** Review and integrate the shared foundation before starting
+dependent Fleet work.
 
-Test the intervention path once with a harmless clarification:
+## 4. Run independent goals with Fleet
 
-```text
-Pause. Re-read issue #<number>. Do not change <prohibited-path>. Revert any
-unowned edit, show the remaining diff, and continue only in the owned paths.
-```
+**Use:** A parent session with Fleet after X is reviewed.
 
-The session transcript is not a completion receipt.
+**Attach:** `#<y-issue>`, `#<z-issue>`, the reviewed X pull request or commit,
+applicable client/test instructions, and the approved dependency graph.
 
-## 3. Run one task in Copilot CLI
+**Prompt:**
 
-Create a separate worktree so App and CLI tasks cannot overwrite each other:
+> Use Fleet to execute #<y-issue> and #<z-issue> in parallel. Give each
+> subagent only its issue, owned paths, applicable instructions, and focused
+> validation. Do not let either task modify the shared contract or the other
+> task's primary files. The parent session should monitor progress, collect
+> diffs and validation, and stop for my review before integration or pull
+> request creation.
 
-```powershell
-$TaskIssue = 0 # replace with the CLI task issue number
-if ($TaskIssue -le 0) { throw "Set TaskIssue to the CLI task issue." }
-$TaskBranch = "task/$TaskIssue-cli"
-$TaskPath = Join-Path (Split-Path $PWD -Parent) "issue-$TaskIssue-cli"
-git worktree add $TaskPath -b $TaskBranch $Base
-gh issue view $TaskIssue --comments
-copilot -C $TaskPath --name "issue-$TaskIssue-cli" --mode interactive -i `
-  "Implement only GitHub issue #$TaskIssue. Read its linked OpenSpec artifacts, DESIGN.md, and applicable AGENTS.md files. Respect owned and prohibited paths. Run the issue's focused validation and finish with branch, commit, test, and PR receipts."
-```
+**Expect:** Visible parallel tasks with separate ownership, progress, diffs,
+and validation results.
 
-During the interactive session:
+**Decide:** Stop or redirect any subagent that crosses its boundary. Fleet is
+successful only if the work remains independently reviewable.
 
-- use `/tasks` to inspect active agent work;
-- use `/diff` to inspect changes;
-- send the same `Pause. Re-read issue...` redirect if scope drifts;
-- press `Ctrl+C` to stop an unsafe command or stop the session if redirection
-  fails.
+## 5. Practice steering a drifting task
 
-After the session exits, independently inspect its work:
+**Use:** The active parent or child session in Interactive mode.
 
-```powershell
-git -C $TaskPath --no-pager status --short
-git -C $TaskPath --no-pager diff --check
-git -C $TaskPath --no-pager diff "$Base...HEAD"
-```
+**Attach:** The drifting task issue and changed-file view.
 
-Do not use `--allow-all`, `--yolo`, or broad path grants for this lab.
+**Prompt:**
 
-## 4. Monitor and redirect both paths
+> Pause. Re-read #<task-issue> and compare the current diff with its owned and
+> prohibited paths. Revert unowned changes, explain why the drift occurred,
+> show the remaining diff, and stop for my review before continuing.
 
-For every active task:
+**Expect:** A corrected diff and explicit scope explanation.
 
-- compare changed files with owned/prohibited paths;
-- confirm dependencies are still valid;
-- add scope decisions or blockers to the task issue;
-- stop overlapping work before integration;
-- create a follow-up issue rather than silently broadening the task.
+**Decide:** Continue only when the issue contract and changed files agree.
+Create a follow-up issue instead of silently broadening scope.
 
-If a shared contract changes, pause consumers, review and merge the contract
-first, then update dependent branches from the reviewed commit.
+## 6. Use Autopilot for one bounded goal
 
-## 5. Integrate in dependency order
+**Use:** A new isolated session in Autopilot mode.
 
-Review the smallest authoritative dependency first:
+**Attach:** A small approved issue such as a focused accessibility,
+documentation, or regression-test improvement with no unresolved dependency.
 
-```powershell
-git --no-pager diff "$Base...HEAD"
-git --no-pager diff --check
-```
+**Prompt:**
 
-Run the exact focused command recorded on the issue. Open a pull request that
-links the task issue, seeded parent issue, specification pull request, and
-OpenSpec scenarios. Do not merge a dependent pull request before its contract
-dependency is reviewed.
+> Complete #<bounded-issue> as one autonomous goal. Read the linked OpenSpec
+> scenario, root and local instructions, and existing patterns. Stay within the
+> issue's owned paths, run its focused validation and required repository
+> checks, create a focused pull request, and stop if scope, permissions, or
+> acceptance criteria are unclear. Do not merge.
 
-Post a durable receipt on each completed task:
+**Expect:** A completed bounded change with a pull request and real validation,
+or a clearly stated blocker.
 
-```powershell
-$Receipt = @"
-Execution receipt
-- Branch: <branch>
-- Commit: <full-sha>
-- Focused validation: `<command>` — PASS
-- Pull request: <url>
-- Dependency state: <issue/PR links>
-"@
-gh issue comment $TaskIssue --body $Receipt
-```
+**Decide:** Review the diff and evidence. Autopilot completion is not human
+approval.
 
-Replace every placeholder and report a failure accurately. A model's summary
-does not turn an unrun test into `PASS`.
+## 7. Integrate in dependency order
+
+**Use:** The App's diff, review, checks, and pull-request experiences.
+
+**Attach:** The X, Y, and Z issues and pull requests.
+
+**Prompt:**
+
+> Review these pull requests against their issue ownership and OpenSpec
+> scenarios. Identify dependency-order violations, conflicting files, missing
+> validation, stale checks, or evidence that exists only in an agent summary.
+> Recommend the safe integration order and prepare concise execution receipts
+> for each issue. Do not merge until I approve the order.
+
+**Expect:** X integrates before dependent work; Y and Z integrate only when
+their current checks and reviews are valid.
+
+**Decide:** Humans approve and merge each pull request in dependency order.
 
 ## Expected repository artifacts
 
-- The seeded parent issue linked to the approved OpenSpec change.
-- At least two participant-created bounded task issues.
-- Non-overlapping ownership and explicit dependency notes.
-- One Copilot App session and one Copilot CLI session on isolated worktrees.
-- Branch, commit, focused-test, and pull-request receipts on each task issue.
+- Parent feature issue linked to the approved OpenSpec change.
+- Three bounded X/Y/Z task issues with non-overlapping ownership.
+- An Interactive shared-foundation session.
+- A Fleet run for independent goals.
+- A separate Autopilot session for one bounded goal.
+- Branch, commit, validation, review, and pull-request receipts on GitHub.
 
 ## Verification
 
-```powershell
-openspec validate --all
-git --no-pager diff --check
-gh issue view $ParentIssue --comments
-gh pr list --state all --limit 50
-git worktree list
-```
-
-A teammate without transcript access must be able to reconstruct assignment,
-intervention, dependency order, validation, and integration from GitHub and the
-repository alone.
+Ask a new reviewer Chat to reconstruct task assignment, Plan approval, Fleet
+delegation, scope correction, Autopilot goal, dependency order, and integration
+using only GitHub and repository artifacts. The reviewer must not need session
+transcripts.
 
 ## Recovery
 
-Time-box conflict repair to ten minutes:
-
-1. stop the task that depends on an unstable contract;
-2. preserve both issue receipts and branches;
-3. keep the smallest authoritative contract change;
-4. update dependent work only after that contract is reviewed;
-5. if still blocked, use the instructor-published Lab 2 checkpoint on a new
-   recovery branch.
-
-Do not force-reset or delete participant branches.
+Stop overlapping work, preserve every issue and session, and ask a new Plan
+session to propose the smallest non-overlapping integration path. If repair
+cannot complete within ten minutes, use the instructor-provided Lab 2 recovery
+checkpoint on a new branch without deleting participant work.
 
 ## Stretch
 
-Add a third test-only or documentation-only task and prove it can merge without
-touching either feature implementation worktree.
+Fork one session before implementation, explore an alternative design in the
+fork, compare both results with `/rubber-duck`, and merge only the selected
+direction back to the parent session.

@@ -24,7 +24,11 @@ evidence over instructor memory or agent claims.
 - Bind Azure federation to immutable GitHub repository identity and the
   intended environment.
 - Preserve OpenSpec as the canonical participant SDD path.
-- Give Lab 2 a concrete App/CLI orchestration path with durable GitHub receipts.
+- Make the GitHub Copilot App the canonical participant interface.
+- Give every guided lab concise prompts for Chat, Plan, Interactive, Fleet,
+  Autopilot, review, and pull-request work where each mode fits.
+- Give Lab 2 a concrete GitHub Copilot App orchestration path with durable
+  GitHub receipts.
 - Link successful deployment evidence to the pull request that requested it.
 - Make cloud-agent and security exercises deterministic and independent of
   participant feature selection.
@@ -32,6 +36,8 @@ evidence over instructor memory or agent claims.
   authority.
 - Recover teams without exposing later solutions or destroying their work.
 - Gate event readiness on a timed rehearsal from a newly created repository.
+- Provide an optional synthesis path where teams create a bounded net-new
+  application without compressing the guided four-hour agenda.
 
 **Non-Goals:**
 
@@ -103,16 +109,44 @@ Spec Kit is represented only by a comparison artifact mapping equivalent
 concepts and explaining trade-offs. No `.specify/` directory, Spec Kit branch,
 installation, or parallel lab path is added.
 
-### Make App and CLI orchestration observable
+### Make GitHub Copilot App orchestration observable
 
 Lab 2 translates approved `tasks.md` items into a seeded parent/task issue
-structure. Participants open bounded Copilot App sessions and Copilot CLI agent
-tasks with non-overlapping owned paths and explicit dependencies. They monitor,
-redirect, and integrate work in dependency order.
+structure. Participants use GitHub Copilot App sessions with non-overlapping
+owned paths and explicit dependencies. Plan mode establishes the reviewed task
+graph, Fleet executes only independent work, Interactive mode handles ambiguous
+or shared-contract work, and Autopilot executes one already approved,
+well-bounded goal. Participants monitor, redirect, and integrate work in
+dependency order.
 
 Every completed task records its issue, owner, branch, commit, focused
 validation, and pull request. These receipts are evidence of orchestration; the
 agent transcript is not.
+
+### Use App-native prompt cards rather than terminal runbooks
+
+Each participant lab uses short prompt cards with five fields:
+
+- **Use:** the App surface or session mode;
+- **Attach:** the issue, file, specification, pull request, or evidence;
+- **Prompt:** one clear outcome and concrete behavior;
+- **Expect:** the plan, diff, check, workflow, or artifact to inspect; and
+- **Decide:** the human approval, redirection, or stop condition.
+
+Prompts move participants through exploration, plan review, bounded execution,
+independent validation, and durable GitHub evidence. Participant labs contain
+no shell or PowerShell procedures. The App may run repository-owned validation
+on behalf of the participant, while instructor scripts remain documented under
+`docs/instructor/`.
+
+“Goal-oriented execution” uses the documented Autopilot mode. Fleet is used
+only after dependencies and non-overlapping file ownership are reviewed.
+Prompts do not embed completed feature, security, infrastructure, or GH-AW
+solutions.
+
+**Alternative considered:** Keep command blocks beside App prompts. Rejected
+because attendees would continue following the terminal path and miss the
+session, mode, steering, and review capabilities the lab is intended to teach.
 
 ### Publish deployment evidence from a separate narrow job
 
@@ -192,6 +226,25 @@ The run records elapsed time, blockers, fallbacks, and links to platform
 evidence. Event readiness remains blocked by failed required controls, missing
 App Service quota, or inability to complete/recover within the agenda.
 
+### Add a separate optional App-led capstone
+
+The five guided labs and workshop wrap remain the four-hour critical path. A
+separate 90-120 minute extension or follow-up asks each team to select one of
+four bounded application briefs and build it under `capstone/<app-name>/`.
+
+The capstone has its own local harness guidance, source, tests, CI selectors,
+infrastructure composition, and deployment evidence. It reuses repository-wide
+identity and governance controls but may not modify the feedback application as
+a shortcut. Teams use Chat to clarify intent, Plan mode to approve the OpenSpec
+contract and issue graph, Fleet for independent work, separate sessions for
+separate tickets, and Autopilot for one bounded feature or bug-fix goal.
+
+The resulting application uses GitHub Actions CI/CD, AVM-first infrastructure,
+GitHub OIDC, a real ticket-driven defect loop, a GH-AW with exactly one safe
+output, and final evidence reconstruction. The template contains only briefs,
+boundaries, prompts, and validation rules. Completed capstone solutions remain
+outside the public default branch.
+
 ## Permissions and Data Boundaries
 
 - Preparation uses an instructor identity with only the repository and
@@ -202,6 +255,8 @@ App Service quota, or inability to complete/recover within the agenda.
   gains `pull-requests: write`.
 - GH-AW workflows declare one narrow safe output and cannot self-approve,
   merge, deploy, or alter protected workflow definitions.
+- Capstone prompts cannot grant broader permissions than the repository's
+  existing workflow, environment, OIDC, and review boundaries.
 - Seeded content contains no credentials, attendee-specific identifiers, or
   private instructor solutions.
 - Instructor solution refs remain outside participant read access until one
@@ -219,6 +274,8 @@ App Service quota, or inability to complete/recover within the agenda.
 - CodeQL is demonstrated failing on the seeded draft pull request and passing
   after remediation.
 - Checkpoint tests prove the next lab can start without revealing later answers.
+- Documentation tests prove every participant lab uses App-native prompt cards
+  and contains no terminal command blocks.
 - The rehearsal report links GitHub checks, security results, Azure operations,
   deployment, smoke tests, and final evidence rather than relying on narrative.
 
@@ -239,6 +296,9 @@ App Service quota, or inability to complete/recover within the agenda.
   named boundaries keeps the recovery surface bounded.
 - End-to-end rehearsal consumes cloud-agent, Actions, and Azure capacity. A
   disposable, isolated repository and resource group limit impact.
+- A net-new app can exceed the capstone time box. Comparable briefs, explicit
+  non-goals, local directory boundaries, and a required minimal evidence path
+  constrain scope.
 
 ## Migration and Rollback
 

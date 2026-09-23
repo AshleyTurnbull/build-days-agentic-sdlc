@@ -1,210 +1,158 @@
-# Lab 1: OpenSpec and harness engineering
+# Lab 1: OpenSpec and harness engineering in GitHub Copilot App
 
 ## Outcome
 
 Create and review an OpenSpec change for the team's assigned feature, then make
-the repository context precise enough that a fresh agent can implement one
-bounded task without the original conversation.
+the repository context precise enough that a fresh App session can implement
+one bounded task without the original conversation.
 
-At the end of this lab, the repository contains:
+The durable result includes a proposal, observable capability scenarios, a
+change-local design, bounded tasks, any necessary co-located `AGENTS.md`
+improvement, and a specification pull request linked to the seeded issue.
 
-- `openspec/changes/<change-name>/proposal.md`;
-- capability specs with observable scenarios;
-- a change-local `design.md`;
-- a bounded `tasks.md`;
-- any necessary co-located `AGENTS.md` update; and
-- a specification pull request linked to the seeded feature issue.
-
-OpenSpec is the canonical hands-on specification path. The optional
+OpenSpec is the canonical hands-on SDD path. The
 [Spec Kit comparison](../comparisons/spec-kit-to-openspec.md) is a concept map,
-not another toolchain or implementation route.
+not another toolchain.
+
+Use the [App prompting pattern](copilot-app-prompting.md) throughout this lab.
 
 ## Prerequisites
 
-- The instructor environment check is green, including its manual Copilot App
-  check.
-- The repository contains one instructor-seeded issue for the team's assigned
+- The instructor environment and GitHub Copilot App checks are green.
+- The repository has one seeded issue for the assigned
   [feature brief](../features/README.md).
-- Node.js is 20.19 or later and OpenSpec is available.
+- OpenSpec, the root `DESIGN.md`, root and co-located `AGENTS.md`, and AVM
+  guidance are present in the repository.
+- The team can create an isolated App session and a specification pull request.
 
-```powershell
-node --version
-openspec --version
-openspec status
-gh auth status
-gh issue list --state open --limit 50
-```
+## 1. Explore the issue before choosing a solution
 
-Set the seeded issue number after finding the issue that names the assigned
-feature:
+**Use:** A new Chat for this repository.
 
-```powershell
-$FeatureIssue = 0 # replace with the seeded issue number
-if ($FeatureIssue -le 0) { throw "Set FeatureIssue to the seeded issue number." }
-gh issue view $FeatureIssue --comments
-```
+**Attach:** `#<feature-issue>`, `@DESIGN.md`, `@AGENTS.md`, the assigned feature
+brief, the closest area instructions, `@infra/README.md`, and
+`@.github/instructions/azure-avm.instructions.md`.
 
-Do not create a substitute feature issue if the seeded work is missing. Record
-the preparation gap and use the instructor recovery path.
+**Prompt:**
 
-## Mental model and example
+> Explore #<feature-issue> as input to an OpenSpec change. Identify the
+> observable user outcome, likely capability requirements, architecture
+> boundaries, affected areas, failure and accessibility states, AVM/OIDC
+> impact, and questions that must be answered before implementation. Do not
+> create files or propose code yet.
 
-```text
-seeded GitHub issue
-  -> proposal: why, scope, and capabilities
-  -> specs: observable requirements and scenarios
-  -> design: technical decisions for this change
-  -> tasks: bounded implementation and validation
-  -> harness: DESIGN.md, AGENTS.md, instructions, tools, and feedback
-  -> specification pull request: human approval of intent
-```
+**Expect:** A concise problem framing, relevant repository constraints, and
+open questions grounded in attached artifacts.
 
-Root [`DESIGN.md`](../../DESIGN.md) records durable architecture. A change
-`design.md` records decisions for one change; it does not replace the root
-design.
+**Decide:** Resolve scope questions and reject assumptions that are not
+supported by the issue or repository.
 
-Before authoring the feature change, inspect the
+## 2. Propose the specification in Plan mode
+
+**Use:** A new isolated session in Plan mode.
+
+**Attach:** The same issue and files, plus the
 [completed non-solution example](../examples/completed-openspec-example.md).
-It demonstrates proposal, scenarios, design, and tasks for a documentation-only
-change and does not implement feedback status, category filtering, board
-sorting, or author summary.
 
-## 1. Trace the assigned intent
+**Prompt:**
 
-Read, in order:
+> Create a plan for an OpenSpec change named `<change-name>` for
+> #<feature-issue>. The plan must produce proposal, capability scenarios,
+> change design, bounded tasks, and only the harness updates a fresh agent
+> actually needs. Map every scenario to independent validation and separate
+> parallel tasks by non-overlapping primary paths. Do not implement the feature.
+> Stop for my approval after showing the planned artifacts and files.
 
-1. the seeded feature issue;
-2. the assigned feature brief;
-3. root [`DESIGN.md`](../../DESIGN.md);
-4. root [`AGENTS.md`](../../AGENTS.md);
-5. the closest `AGENTS.md` for every likely owned path; and
-6. the current infrastructure guidance in
-   [`infra/README.md`](../../infra/README.md) and the scoped
-   [AVM Copilot instructions](../../.github/instructions/azure-avm.instructions.md).
+**Expect:** A reviewable artifact plan, dependency graph, path ownership, tests,
+and explicit non-goals.
 
-Use exploration before selecting a solution:
+**Decide:** Approve only after the plan distinguishes root `DESIGN.md` from the
+change-local `design.md` and keeps OpenSpec as the single SDD path.
 
-```text
-/opsx:explore
-```
+## 3. Challenge the proposed scenarios
 
-Answer these questions in durable artifacts, not only in chat:
+**Use:** The planned session with `/rubber-duck`, or a separate reviewer Chat.
 
-- Which user or operator behavior is observable?
-- Which capability is added or modified?
-- Which root architecture boundary constrains the solution?
-- Which files can separate agents own without overlap?
-- Which focused test or check proves each scenario?
-- Does the change affect the pinned AVM composition, identity, permissions, or
-  deployment evidence? If not, say so explicitly.
+**Attach:** The proposed OpenSpec artifacts.
 
-## 2. Propose the OpenSpec change
+**Prompt:**
 
-```text
-/opsx:propose <kebab-case-change-name>
-```
+> Critique this OpenSpec proposal as a skeptical reviewer. Find missing
+> observable scenarios, untestable requirements, hidden implementation
+> choices, accessibility or failure-state gaps, overlapping task ownership,
+> and unsupported infrastructure assumptions. Recommend specific corrections
+> without implementing the feature.
 
-Review every generated artifact before implementation.
+**Expect:** Concrete findings tied to requirements, scenarios, design
+decisions, or tasks.
 
-### Proposal review
+**Decide:** Accept, revise, or explicitly reject each finding before allowing
+the session to create artifacts.
 
-- The seeded issue is linked.
-- Scope and non-scope are explicit.
-- Capability names are stable.
-- Application, tests, infrastructure, workflow, and documentation impact is
-  accurate.
+## 4. Create and refine the OpenSpec artifacts
 
-### Specification review
+**Use:** The approved session in Interactive mode.
 
-- Requirements state observable behavior rather than implementation choices.
-- Every requirement has concrete `WHEN`/`THEN` scenarios.
-- Failure, loading, empty, accessibility, and boundary behavior are covered
-  where applicable.
-- Each scenario maps to a test or independent check.
+**Attach:** The reviewed plan and critique.
 
-### Change-design review
+**Prompt:**
 
-- Root `DESIGN.md` constraints are referenced rather than copied.
-- Decisions record rationale and rejected alternatives.
-- Security, observability, migration, and rollback are addressed as needed.
-- AVM references remain pinned. Any native Bicep is an explicitly documented
-  AVM gap, not an unreviewed replacement.
-- Azure authentication remains GitHub OIDC and runtime access remains managed
-  identity with least privilege.
+> Apply the approved specification plan only. Create the OpenSpec proposal,
+> capability specs, change design, and tasks for `<change-name>`. Update the
+> closest `AGENTS.md` only if a fresh implementation session would otherwise
+> miss a local boundary or focused validation path. Run repository-owned
+> OpenSpec and documentation validation, report the real results, and stop
+> without implementing participant feature code.
 
-### Task review
+**Expect:** Complete specification artifacts, minimal harness changes, and
+actual validation results.
 
-- Tasks are small enough for one agent context.
-- Parallel tasks have non-overlapping primary paths.
-- Dependencies identify what must stabilize first.
-- Every task names focused validation and a GitHub execution receipt.
-- Integration and documentation work are included.
+**Decide:** Inspect the diff. Redirect the session if it changes application,
+infrastructure, or workflow implementation.
 
-## 3. Improve only the needed harness
+## 5. Prepare the specification pull request
 
-If an implementation agent would lack local knowledge, update the closest
-`AGENTS.md` with the area's purpose, authoritative links, allowed dependencies,
-focused validation, and prohibited shortcuts.
+**Use:** The App's review and pull-request experience.
 
-Do not duplicate architecture prose into `AGENTS.md`. Do not add `.specify/`,
-install Spec Kit, create a Spec Kit branch, or generate a second set of feature
-artifacts.
+**Attach:** `#<feature-issue>`, the OpenSpec change, changed harness files, and
+the current session diff.
 
-## 4. Validate the specification contract
+**Prompt:**
 
-```powershell
-openspec validate --all
-git --no-pager diff --check
-git --no-pager status --short
-```
+> Review this specification change for consistency with root `DESIGN.md` and
+> the applicable `AGENTS.md` files. Confirm that scenarios are observable,
+> tasks are bounded, validation is named, and AVM/OIDC impact is accurate.
+> Prepare a specification pull request that links #<feature-issue>, the change
+> directory, scenarios, dependency order, validation results, and remaining
+> platform assumptions. Do not describe unrun checks as passed.
 
-Trace one task end to end and confirm that a fresh agent can discover:
+**Expect:** A focused specification pull request with no participant feature
+implementation.
 
-- its parent issue and OpenSpec scenario;
-- owned and prohibited paths;
-- applicable root and co-located instructions;
-- dependencies;
-- focused validation; and
-- required branch, commit, test, and pull-request receipts.
-
-## 5. Open the specification pull request
-
-Create a branch containing only the reviewed OpenSpec and harness changes. The
-pull-request body must link the seeded issue and identify:
-
-- the change directory and capability scenarios;
-- durable constraints in root `DESIGN.md`;
-- implementation tasks and dependency order;
-- AVM/OIDC/least-privilege impact;
-- local validation output; and
-- any platform availability assumption that remains instructor-verified.
-
-The reserved `openspec.yml` and `spec-pr-policy.yml` checks count as evidence
-only when their workflow files exist and a run is visible. Otherwise, record
-the local commands without claiming an unavailable check passed.
+**Decide:** A human reviews and approves the specification before Lab 2 starts.
 
 ## Expected repository artifacts
 
-- Specification pull-request URL linked to the seeded feature issue.
-- Reviewed proposal, capability specs, change design, and tasks.
-- Successful `openspec validate --all`.
-- Clean `git --no-pager diff --check`.
-- Links to each changed harness file.
+- Specification pull request linked to the seeded feature issue.
+- Reviewed proposal, capability scenarios, change design, and tasks.
+- Minimal, justified harness updates.
+- Independent OpenSpec and repository validation evidence.
+
+## Verification
+
+Ask a fresh Chat to explain one task using only the issue, OpenSpec artifacts,
+root and local instructions, dependencies, owned paths, focused validation, and
+required GitHub receipts. If it needs the original conversation, the harness is
+not ready.
 
 ## Recovery
 
-Time-box repair to five minutes:
-
-1. compare structure with the completed non-solution example;
-2. copy only missing headings or artifact shape, never its content as the
-   feature answer;
-3. rerun `openspec validate --all`;
-4. if still blocked, preserve the issue and branch, then use the
-   instructor-published Lab 1 recovery checkpoint.
-
-Never guess a checkpoint name or force-reset participant work.
+Ask a new Plan session to compare the incomplete change with the completed
+non-solution example and repair only missing artifact structure. If the change
+still cannot validate after five minutes, preserve the issue and session, then
+ask the instructor for the Lab 1 recovery checkpoint.
 
 ## Stretch
 
-Add one mechanically enforceable architecture or documentation check and show
-the failure message teaches a fresh agent how to repair the violation.
+Prompt the App to propose one mechanically enforceable repository-context rule
+and the failure message that would teach a fresh agent how to repair it.
