@@ -97,7 +97,9 @@ In Copilot App, compare:
 Use the pinned workshop creation guide:
 <https://raw.githubusercontent.com/github/gh-aw/v0.88.8/create.md>.
 The pinned guide may direct Copilot to read further official upstream
-documentation; follow those official reads when required.
+documentation; follow those official reads when required. The repository
+already pins GH-AW `v0.88.8`: skip the guide's install-or-upgrade step and do
+not replace the workshop compiler with `main` or `latest`.
 
 ### Prompt card: propose before files
 
@@ -108,9 +110,11 @@ documentation; follow those official reads when required.
 - **Prompt:** Create a GH-AW using the approved creation guide. Its purpose is
   triage and security-delivery evidence. Before creating or changing files,
   propose the trigger, read permissions, tools, evidence sources, and exactly
-  one safe output. Keep authority narrow: it must not approve, merge, bypass
-  rules, edit protected workflows, deploy, or write anything beyond that one
-  output. Wait for the human decision on the proposal before authoring.
+  one safe output. Use the repository-pinned GH-AW `v0.88.8` compiler and skip
+  any instruction to upgrade or install from `main`. Keep authority narrow: it
+  must not approve, merge, bypass rules, edit protected workflows, deploy, or
+  write anything beyond that one output. Wait for the human decision on the
+  proposal before authoring.
 - **Expect:** A reviewable design proposal before any file change.
 - **Decide:** Approve, revise, or reject the proposed trigger, permissions,
   tools, and single output. Do not continue with broad or ambiguous authority.

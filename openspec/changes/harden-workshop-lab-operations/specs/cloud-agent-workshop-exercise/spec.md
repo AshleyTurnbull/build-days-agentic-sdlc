@@ -29,7 +29,9 @@ merge.
 #### Scenario: Initial agent pull request is reviewable
 
 - **WHEN** the cloud agent opens its pull request and focused checks complete
-- **THEN** a human reviewer requests the seeded revision before approval
+- **THEN** its exact exercise marker and governed path set satisfy the
+  specification policy and a human reviewer requests the seeded revision
+  before approval
 
 #### Scenario: Revision is completed
 

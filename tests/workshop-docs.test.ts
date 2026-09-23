@@ -54,5 +54,33 @@ describe("participant lab documentation", () => {
 
     expect(content).toContain("https://raw.githubusercontent.com/github/gh-aw/v0.88.8/create.md");
     expect(normalized).toContain("exactly one safe output");
+    expect(normalized).toContain("skip any instruction to upgrade or install from `main`");
+  });
+
+  it("requires the specification pull request to merge before implementation", () => {
+    expect(read("docs/labs/01-openspec-and-harness.md").replace(/\s+/g, " ")).toContain(
+      "approves, and merges the specification pull request",
+    );
+    expect(read("docs/labs/02-multi-agent-orchestration.md")).toContain(
+      "specification pull request is approved and merged",
+    );
+  });
+
+  it("keeps seeded exercise policy exceptions marker and path constrained", () => {
+    const policy = read(".github/workflows/spec-pr-policy.yml");
+
+    expect(policy).toContain("<!-- cloud-agent-revision-exercise:v1 -->");
+    expect(policy).toContain("src/server/app.ts");
+    expect(policy).toContain("tests/api.test.ts");
+    expect(policy).toContain("<!-- workshop-lab5-codeql-exercise -->");
+    expect(policy).toContain("workshop/lab5-codeql-exercise");
+    expect(policy).toContain("tests/security-exercise/unsafe-command.ts");
+
+    expect(read("scripts/prepare-team-repo.ps1")).toContain(
+      "<!-- cloud-agent-revision-exercise:v1 -->",
+    );
+    expect(read("scripts/seed-security-exercise.ps1")).toContain(
+      "<!-- workshop-lab5-codeql-exercise -->",
+    );
   });
 });

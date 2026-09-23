@@ -65,8 +65,10 @@ assignment event on the issue; do not supply hidden context from Labs 1 or 2.
 - **Attach:** The seeded issue only; its links provide the repository context.
 - **Prompt:** Implement this bounded issue. Follow the linked OpenSpec scenario,
   root and closest instructions, owned and prohibited paths, and checked-in
-  focused validation. Open a pull request that links the issue and reports
-  validation actually run.
+  focused validation. Open a pull request that links the issue, reports
+  validation actually run, links
+  `openspec/changes/harden-workshop-lab-operations/`, and preserves the issue's
+  `<!-- cloud-agent-revision-exercise:v1 -->` marker in the pull-request body.
 - **Expect:** An observable agent run and a pull request limited to
   `src/server/app.ts` and `tests/api.test.ts`.
 - **Decide:** If no assignment control is visible or no run starts within five

@@ -173,6 +173,12 @@ The exact issue content is selected from the verified baseline during
 implementation and remains small enough to complete independently of the
 team's selected feature.
 
+Because template repositories do not copy the source repository's merged pull
+request records, the seeded exercise cannot reference a merged specification
+PR from the template. The specification policy therefore recognizes only the
+exact Lab 4 marker paired with the two approved governed paths. Any additional
+governed path fails the exception.
+
 ### Isolate the CodeQL exercise from deployable code
 
 Instructor credentials create a dedicated non-production branch and draft pull
@@ -186,6 +192,12 @@ Participants remediate the finding on that pull request, confirm the expected
 CodeQL alert disappears, merge the safe state, and capture final evidence. The
 vulnerable fixture never exists on the template default branch and no live
 credential or production exploit is used.
+
+The specification policy recognizes the Lab 5 exception only when the pull
+request uses the exact seeded branch, exact marker, controlling hardening
+change, and single governed fixture path. This avoids a broad label- or
+author-based bypass while allowing the prepared exercise to satisfy required
+checks.
 
 ### Separate reference GH-AW from participant authorship
 

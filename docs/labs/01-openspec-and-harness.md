@@ -129,11 +129,14 @@ the current session diff.
 **Expect:** A focused specification pull request with no participant feature
 implementation.
 
-**Decide:** A human reviews and approves the specification before Lab 2 starts.
+**Decide:** A human reviews, approves, and merges the specification pull
+request before Lab 2 starts. Implementation pull requests require the merged
+specification PR as durable policy evidence.
 
 ## Expected repository artifacts
 
 - Specification pull request linked to the seeded feature issue.
+- Human approval and merge receipt for the specification pull request.
 - Reviewed proposal, capability scenarios, change design, and tasks.
 - Minimal, justified harness updates.
 - Independent OpenSpec and repository validation evidence.

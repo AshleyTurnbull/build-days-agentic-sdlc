@@ -11,7 +11,7 @@ Use the [App prompting pattern](copilot-app-prompting.md) throughout this lab.
 
 ## Prerequisites
 
-- The Lab 1 specification pull request is approved.
+- The Lab 1 specification pull request is approved and merged.
 - The seeded parent feature issue links the approved OpenSpec change.
 - The App can create isolated sessions for the team repository.
 - Each task can name owned paths, prohibited paths, dependencies, focused

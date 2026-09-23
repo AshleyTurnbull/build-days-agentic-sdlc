@@ -12,7 +12,8 @@ identified query in the configured CodeQL suite.
   normal pull-request workflows
 - **THEN** CodeQL reports the expected finding on the draft pull request and a
   sanitized issue links the finding, OpenSpec scenario, acceptance criteria,
-  focused validation, and remediation pull request
+  focused validation, and remediation pull request, while the exact branch,
+  marker, and fixture path satisfy the specification policy
 
 #### Scenario: Application is built or deployed
 

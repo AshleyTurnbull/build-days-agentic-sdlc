@@ -220,6 +220,9 @@ JSON responses.
 - Cover ``GET /health`` and both the ``200`` and ``503`` ``GET /ready`` paths.
 - Run ``npm test -- tests/api.test.ts``.
 - Link the branch, commit, test result, and pull request here.
+- Include ``<!-- cloud-agent-revision-exercise:v1 -->`` in the pull-request
+  body so the specification policy can validate this exact instructor-seeded
+  exercise without treating it as participant feature implementation.
 
 A human reviewer must request a focused ``HEAD /health`` regression assertion
 before approval. The revision must prove the no-store header is present and the
