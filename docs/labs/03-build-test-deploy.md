@@ -85,6 +85,26 @@ implemented deployment path. Approve the GitHub environment only after
 reviewing the commit SHA, target environment, resource group, and `what-if`
 evidence.
 
+The deployment input is the pull request number, not a free-form URL. Dispatch
+the workflow from the pull request's head branch so the selected commit is
+contained by that pull request:
+
+```powershell
+$pr = gh pr view --json number,headRefName,headRefOid | ConvertFrom-Json
+gh workflow run deploy.yml `
+  --ref $pr.headRefName `
+  -f teamId="$env:TEAM_ID" `
+  -f pullRequestNumber=$pr.number
+Write-Host "Requested deployment of $($pr.headRefOid) for PR #$($pr.number)."
+```
+
+The workflow rejects a missing or invalid number, a pull request from another
+repository, any selected commit other than the pull request's current head,
+missing required checks, and failed or pending security checks. This prevents
+current-head check results from being attached to an older superseded commit.
+Do not dispatch from the default branch after merge; use the reviewed
+same-repository pull-request head while it is still available.
+
 The deployment is successful only when the workflow verifies:
 
 1. process health;
@@ -95,7 +115,23 @@ The deployment is successful only when the workflow verifies:
 
 ## 5. Capture evidence
 
-Record:
+After live verification succeeds, `deploy.yml` uploads one compact
+`deployment-evidence.json` artifact and creates or updates one marked comment
+on the supplied pull request. A failed deployment or smoke test produces
+neither success evidence nor a success comment.
+
+Inspect the receipt:
+
+```powershell
+$run = gh run list --workflow deploy.yml --limit 1 --json databaseId,url,conclusion |
+  ConvertFrom-Json
+gh run view $run.databaseId
+gh run download $run.databaseId --pattern "deployment-evidence-*"
+Get-Content .\deployment-evidence-*\deployment-evidence.json | ConvertFrom-Json |
+  Format-List
+```
+
+The artifact records:
 
 - implementation pull-request URL and commit SHA;
 - required-check and security status;
@@ -112,6 +148,7 @@ issues or pull requests.
 - Passing implementation pull request linked to OpenSpec scenarios.
 - Reviewed infrastructure change and `what-if` evidence.
 - Protected deployment record.
+- Machine-readable deployment evidence artifact and one updated PR comment.
 - Reachable application URL with persistent feedback and votes.
 
 ## Verification

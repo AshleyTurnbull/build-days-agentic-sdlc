@@ -20,6 +20,8 @@ Describe the approved intent and list the requirement scenarios addressed. A spe
 | Security | CodeQL / dependency review / other scanner | |
 | Infrastructure | Bicep validation and Azure what-if | |
 | Deployment | environment, URL, run/deployment ID, health and API smoke | |
+| GH-AW | source/lock, run, and narrow safe output | |
+| Security remediation | finding reference, fix commit, and passing rescan | |
 
 ## Risk and recovery
 

@@ -6,6 +6,8 @@ Repository documentation is organized for progressive disclosure. Keep this file
 
 - [`workshop-model.md`](workshop-model.md) - participant repository model and lab outputs.
 - [`aidlc-positioning.md`](aidlc-positioning.md) - mapping from familiar AI-DLC concepts to the workshop's GitHub-native implementation.
+- [`comparisons/spec-kit-to-openspec.md`](comparisons/spec-kit-to-openspec.md) - guided comparison while OpenSpec remains the canonical hands-on path.
+- [`examples/completed-openspec-example.md`](examples/completed-openspec-example.md) - compact completed example before teams author their own change.
 - [`labs/01-openspec-and-harness.md`](labs/01-openspec-and-harness.md) - OpenSpec and harness-engineering lab.
 - [`labs/02-multi-agent-orchestration.md`](labs/02-multi-agent-orchestration.md) - visible, bounded multi-agent implementation.
 - [`labs/03-build-test-deploy.md`](labs/03-build-test-deploy.md) - independent validation and Azure deployment.
@@ -30,6 +32,7 @@ Repository documentation is organized for progressive disclosure. Keep this file
 - [`instructor/rulesets.md`](instructor/rulesets.md) - branch rules and required checks.
 - [`instructor/azure-oidc.md`](instructor/azure-oidc.md) - workload identity federation.
 - [`instructor/recovery.md`](instructor/recovery.md) - checkpoints and time-boxed incident recovery.
+- [`instructor/checkpoints/README.md`](instructor/checkpoints/README.md) - private instructor checkpoint contract and publication model.
 - [`instructor/cleanup.md`](instructor/cleanup.md) - post-event access and Azure cleanup.
 
 ## Documentation rules

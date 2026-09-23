@@ -1,0 +1,61 @@
+{
+  "repository": {
+    "id": "123456789",
+    "ownerId": "9876543",
+    "fullName": "octo-workshop/team-01",
+    "issuesEnabled": true,
+    "actionsEnabled": true,
+    "defaultBranch": "main"
+  },
+  "provenanceVerified": true,
+  "cloudAgentBaselineGapVerified": true,
+  "oidcCustomization": {
+    "useImmutableSubject": true,
+    "subClaimPrefix": "repo:octo-workshop@9876543/team-01@123456789"
+  },
+  "environments": ["workshop-validation", "workshop"],
+  "variables": [
+    {"name": "FEATURE_BRIEF", "value": "docs/features/feedback-status.md"},
+    {"name": "GITHUB_REPOSITORY_ID", "value": "123456789"},
+    {"name": "GITHUB_REPOSITORY_OWNER_ID", "value": "9876543"}
+  ],
+  "environmentVariables": {
+    "workshop-validation": [
+      {"name": "TEAM_ID", "value": "team01"},
+      {"name": "AZURE_CLIENT_ID", "value": "00000000-0000-0000-0000-000000000004"},
+      {"name": "AZURE_TENANT_ID", "value": "00000000-0000-0000-0000-000000000002"},
+      {"name": "AZURE_SUBSCRIPTION_ID", "value": "00000000-0000-0000-0000-000000000001"},
+      {"name": "AZURE_RESOURCE_GROUP", "value": "workshop-team01-rg"}
+    ],
+    "workshop": [
+      {"name": "TEAM_ID", "value": "team01"},
+      {"name": "AZURE_CLIENT_ID", "value": "00000000-0000-0000-0000-000000000004"},
+      {"name": "AZURE_TENANT_ID", "value": "00000000-0000-0000-0000-000000000002"},
+      {"name": "AZURE_SUBSCRIPTION_ID", "value": "00000000-0000-0000-0000-000000000001"},
+      {"name": "AZURE_RESOURCE_GROUP", "value": "workshop-team01-rg"}
+    ]
+  },
+  "labels": [
+    {"name": "workshop", "color": "1d76db", "description": "Workshop-planned work"},
+    {"name": "agent-ready", "color": "0e8a16", "description": "Bounded work ready for an agent"},
+    {"name": "instructor-seeded", "color": "5319e7", "description": "Seeded by the instructor preparation path"},
+    {"name": "human-revision-required", "color": "d93f0b", "description": "Requires a human-requested revision before merge"}
+  ],
+  "issues": [
+    {"number": 1, "title": "Workshop feature: docs/features/feedback-status.md", "state": "open", "body": "<!-- workshop-feature-parent:v1 -->"},
+    {"number": 2, "title": "Cloud agent: prevent caching of health and readiness responses", "state": "open", "body": "<!-- cloud-agent-revision-exercise:v1 -->"}
+  ],
+  "secretNames": [],
+  "federatedCredentials": [
+    {
+      "issuer": "https://token.actions.githubusercontent.com",
+      "audiences": ["api://AzureADTokenExchange"],
+      "subject": "repo:octo-workshop@9876543/team-01@123456789:environment:workshop-validation"
+    },
+    {
+      "issuer": "https://token.actions.githubusercontent.com",
+      "audiences": ["api://AzureADTokenExchange"],
+      "subject": "repo:octo-workshop@9876543/team-01@123456789:environment:workshop"
+    }
+  ]
+}

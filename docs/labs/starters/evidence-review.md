@@ -1,12 +1,16 @@
 ---
 # Participant starter: copy this file to
-# .github/workflows/evidence-review.md, then replace every TODO.
+# .github/workflows/security-delivery-review.md, then complete the one TODO.
 
 on:
   workflow_dispatch:
     inputs:
+      issue:
+        description: Seeded security exercise issue number
+        required: true
+        type: number
       pull_request:
-        description: Pull request number to review
+        description: Security remediation pull request number
         required: true
         type: number
 
@@ -28,20 +32,24 @@ tools:
 network: defaults
 
 safe-outputs:
-  # TODO: Declare exactly one safe output for the evidence result.
+  # TODO: Declare exactly one narrow safe output for the review result.
 
 ---
 
-# Delivery evidence review
+# Security and delivery evidence review
 
-Review pull request `${{ inputs.pull_request }}`.
+Review seeded security issue `${{ inputs.issue }}` and remediation pull request
+`${{ inputs.pull_request }}`.
 
-TODO: Write instructions that require the agent to:
+Author instructions that require the agent to:
 
-1. locate the linked OpenSpec change and enumerate its scenarios;
-2. inspect required CI and security results;
-3. inspect the Azure deployment record and live-verification evidence;
-4. distinguish passing, failing, missing, and unavailable evidence;
-5. publish one concise result through the declared safe output;
-6. avoid approving, merging, editing workflows, exposing secrets, or deploying.
-
+1. confirm that the issue and pull request link the deterministic-security
+   OpenSpec scenario and describe the expected CodeQL finding;
+2. inspect the CodeQL result and required CI checks for the remediation commit;
+3. inspect the pull-request-linked Azure deployment record and live-verification
+   evidence;
+4. distinguish passing, failing, missing, skipped, and unavailable evidence;
+5. publish one concise security-and-delivery result through the declared safe
+   output; and
+6. avoid approving, merging, editing workflow files, bypassing rules, exposing
+   secrets, triggering deployment, or claiming that missing evidence passed.

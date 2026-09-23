@@ -2,76 +2,108 @@
 
 ## Outcome
 
-Prepare the GitHub organization and Azure scope needed to create isolated team
-repositories and deployments.
+Prepare organization capacity, one repository and Azure resource group per
+table of two or three, and a secretless workload identity that can later be
+verified by the repository preparation script.
 
-## Inputs
+## Event inventory
 
-Set workshop-specific values in the current PowerShell session:
+Maintain an instructor-only roster with:
 
-```powershell
-$env:GH_ORG = "<organization>"
-$env:TEMPLATE_REPO = "<organization>/<template-repository>"
-$env:AZURE_SUBSCRIPTION_ID = "<subscription-id>"
-$env:AZURE_LOCATION = "<region>"
-$env:WORKSHOP_PREFIX = "<short-prefix>"
-```
+- table/team identifier and two or three participants;
+- target `owner/repository`;
+- approved template commit;
+- selected feature brief;
+- Azure tenant, subscription, resource group, region, and cleanup date;
+- Entra application client ID and object ID; and
+- numeric GitHub repository ID and repository owner ID returned by GitHub.
 
-Do not commit these values. Subscription IDs are not credentials, but keeping
-event configuration out of the template reduces accidental cross-team reuse.
+Do not commit event identifiers or participant data.
 
 ## GitHub organization decisions
 
-Confirm:
+Confirm repository visibility, Actions policy, environment protection,
+Copilot App and CLI access, cloud coding agent access, CodeQL/dependency-review
+availability, GH-AW/model access, and evidence retention. Test licensing and
+policy in a disposable team repository rather than inferring it from the
+template.
 
-- team count and membership;
-- repository visibility;
-- GitHub Copilot and cloud coding agent access;
-- Actions policy and allowed actions;
-- CodeQL and dependency-review availability;
-- environment protection availability;
-- GH-AW and model access;
-- retention requirements for issues, pull requests, Actions, and deployments.
+## Azure scope and quota
 
-Prefer a workshop organization where these controls can be tested centrally.
-Forks are a fallback, not the standard topology.
-
-## Azure decisions
-
-Confirm:
-
-- subscription and tenant;
-- region and App Service quota;
-- one resource group per team;
-- one deployment identity per team, unless a reviewed central pattern provides
-  equivalent isolation;
-- instructor break-glass ownership;
-- resource tags and cleanup date.
-
-Example resource-group creation:
+Confirm the tenant, subscription, region, App Service quota, and one resource
+group per team. Example:
 
 ```powershell
-az account set --subscription $env:AZURE_SUBSCRIPTION_ID
+az account set --subscription "<subscription-id>"
 az group create `
-  --name "$($env:WORKSHOP_PREFIX)-team01-rg" `
-  --location $env:AZURE_LOCATION `
-  --tags workshop=$env:WORKSHOP_PREFIX team=team01 cleanup="<yyyy-mm-dd>"
+  --name "workshop-team01-rg" `
+  --location "<region>" `
+  --tags workshop="<event>" team="team01" cleanup="<yyyy-mm-dd>"
 ```
 
-Repeat from an instructor-maintained roster. Review generated names before
-running bulk operations.
+Assign the workflow identity only the reviewed control-plane role at:
 
-## Least privilege
+```text
+/subscriptions/<subscription-id>/resourceGroups/<team-resource-group>
+```
 
-Scope the GitHub deployment identity to the assigned resource group. The
-deployed App Service identity receives the Storage Table data-plane role only
-for its team's storage account. Keep instructor break-glass access separate
-from workflow identity.
+Do not grant subscription Owner/Contributor by default. Keep instructor
+break-glass access separate. App Service uses its own managed identity for
+Storage Table data-plane access.
+
+## Immutable GitHub OIDC trust
+
+Create one Entra application/service principal per team or a reviewed
+equivalent isolation model. Enable GitHub's immutable OIDC subject for the
+repository and read the live prefix:
+
+```text
+repo:<owner>@<numeric-owner-id>/<repository>@<numeric-repository-id>
+```
+
+Create one Entra federated credential for each exact workflow environment by
+appending `:environment:workshop-validation` or `:environment:workshop`.
+Issuer remains `https://token.actions.githubusercontent.com` and audience
+remains `api://AzureADTokenExchange`.
+
+The preparation script reads GitHub's live OIDC customization and the
+application's federated credentials. It requires the numeric owner/repository
+prefix and exact environment subject, and rejects wildcards, mutable
+`repo:<owner>/<name>`-only subjects, and client-secret fallback. If immutable
+subjects are not available, record a blocking readiness failure rather than
+broadening trust. Follow [the detailed OIDC runbook](azure-oidc.md) to enable
+the repository setting and create credentials.
+
+Retrieve immutable IDs with the instructor identity:
+
+```powershell
+gh api repos/contoso-workshop/workshop-team01 `
+  --jq '{repository_id: .id, repository_owner_id: .owner.id}'
+```
+
+Never store an Azure client secret in repository, environment, organization,
+or instructor automation. Scope the non-secret team and Azure workflow
+variables to each GitHub environment.
+
+## Ordered handoff
+
+1. Record quota, policies, roster, resource groups, and cleanup ownership.
+2. Create each repository from the approved template revision and retain the
+   source template `owner/repository` for tree verification.
+3. Create the team workload identity and exact immutable federated claims.
+4. Run [`prepare-team-repo.ps1`](../../scripts/prepare-team-repo.ps1) first
+   with `-DryRun`, then apply it, then rerun it.
+5. Configure reported manual environment protections and
+   [rulesets](rulesets.md).
+6. Run the executable [readiness preflight](readiness.md).
+7. Trigger `infra-validate.yml` and rerun preflight to capture green OIDC and
+   Azure `what-if` evidence.
 
 ## Exit criteria
 
-- Organization feature matrix recorded.
-- Azure region and quota tested.
-- Team roster mapped to repository and resource group names.
-- Cleanup owner and date assigned.
-- No long-lived Azure client secrets planned for GitHub Actions.
+- Organization feature matrix and fallbacks are recorded.
+- Azure region and App Service quota are tested.
+- Every table maps to one repository, identity, and resource group.
+- Numeric GitHub identity and exact environment federation are verified.
+- No long-lived Azure client secret is planned or present.
+- Cleanup owner and date are assigned.

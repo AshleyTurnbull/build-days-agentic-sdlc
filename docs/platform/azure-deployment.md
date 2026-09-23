@@ -26,8 +26,11 @@ be able to identify module versions, parameters, exceptions, and the Azure
 ## Authentication and authorization
 
 GitHub Actions uses OIDC to obtain short-lived Azure credentials. Federation is
-constrained to the intended repository and GitHub environment. No long-lived
-Azure client secret is required.
+constrained to the immutable GitHub.com subject
+`repo:<owner>@<owner-id>/<repository>@<repository-id>:environment:<environment>`
+observed from the repository OIDC API. Each workflow environment owns its
+Azure identifiers and resource-group variable values. No long-lived Azure
+client secret is required.
 
 Keep these identities separate:
 
@@ -41,8 +44,12 @@ Instructor setup is documented in
 
 ## Deployment success
 
-`deploy.yml`, once implemented and active, must not publish success-shaped
-evidence until it verifies:
+`deploy.yml` requires a pull-request number and verifies that the selected
+commit belongs to that repository's pull request before Azure authentication.
+It also requires configured pull-request checks to pass and records observed
+security-check status.
+
+The workflow must not publish success-shaped evidence until it verifies:
 
 - Azure deployment completion;
 - application process health;
@@ -51,9 +58,15 @@ evidence until it verifies:
 - first vote;
 - repeated-vote protection.
 
-The recorded evidence includes the application URL, commit SHA, GitHub
-environment, and Azure deployment identifier. A failed smoke test keeps the
-workflow failed.
+Only after those checks pass, the deployment job uploads a compact
+`deployment-evidence.json` artifact containing the pull request, commit,
+required-check and security status, workflow/Azure deployment identifiers,
+environment, application URL, and individual live-verification booleans. A
+separate job with `pull-requests: write` creates or updates one marker-addressed
+PR comment. Validation and deployment jobs have no PR write permission.
+
+A failed linkage check, required/security check, deployment, or smoke test
+keeps the workflow failed and suppresses the evidence artifact and PR comment.
 
 ## Team isolation
 

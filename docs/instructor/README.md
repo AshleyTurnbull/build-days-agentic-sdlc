@@ -5,7 +5,7 @@ Complete setup in this order:
 1. [`provisioning.md`](provisioning.md) - confirm organization, Azure, licensing,
    quota, and naming decisions.
 2. [`team-repositories.md`](team-repositories.md) - create one isolated
-   repository per team from the template.
+   repository per table of two or three participants from the template.
 3. [`azure-oidc.md`](azure-oidc.md) - create workload identities and federated
    credentials.
 4. [`rulesets.md`](rulesets.md) - configure protected branches, environments,
@@ -14,6 +14,15 @@ Complete setup in this order:
 6. [`recovery.md`](recovery.md) - publish and verify recovery checkpoints.
 7. [`cleanup.md`](cleanup.md) - remove temporary access and Azure resources
    after evidence retention requirements are met.
+
+Use the repository scripts as the executable path:
+
+```powershell
+.\scripts\prepare-team-repo.ps1 -Help
+.\scripts\verify-env.ps1
+.\scripts\seed-security-exercise.ps1 -Help
+.\scripts\publish-checkpoint.ps1 -Help
+```
 
 Use [`../workshop-model.md`](../workshop-model.md) for the participant topology
 and [`../platform/evidence-contract.md`](../platform/evidence-contract.md) for

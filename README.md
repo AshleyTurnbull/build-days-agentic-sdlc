@@ -34,7 +34,9 @@ Each team still creates the workshop outcome:
 2. implement its contract, API, UI, and tests with local and cloud agents;
 3. extend the App Service AVM configuration with the health-check setting;
 4. merge through the GitHub evidence gates and deploy the changed app;
-5. author and compile an evidence-review GH-AW from the Lab 5 starter.
+5. author and compile a security-and-delivery review GH-AW;
+6. remediate the instructor-seeded CodeQL finding, merge the verified fix, and
+   preserve the final deployment evidence.
 
 Completed feature and evidence-workflow solutions do not belong on the template
 branch. Instructor checkpoints provide recovery without replacing participant
@@ -93,7 +95,24 @@ The command spelling may vary by coding tool. `openspec init` reports the comman
 
 ## Workshop delivery model
 
-Use this repository as a **template**, not as the upstream for participant forks. Pre-create one repository per team in the workshop organization so that Actions, Copilot coding agent access, GitHub security features, Azure OIDC, environments, and GH-AW permissions can be tested before the event.
+Use this repository as a **template**, not as the upstream for participant
+forks. Pre-create one repository per table of two or three participants in the
+workshop organization so that Actions, Copilot coding agent access, GitHub
+security features, Azure OIDC, environments, and GH-AW permissions can be
+tested before the event.
+
+The check-in gate is executable:
+
+```powershell
+.\scripts\verify-env.ps1
+```
+
+Instructors prepare each team repository with the reviewed setup script rather
+than asking participants to configure GitHub or Azure during the labs:
+
+```powershell
+.\scripts\prepare-team-repo.ps1 -Help
+```
 
 See [`docs/workshop-model.md`](docs/workshop-model.md) for the repository and
 lab design. Participant instructions continue in

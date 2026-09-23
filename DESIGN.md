@@ -151,6 +151,28 @@ approvals, health/readiness probes, and the focused feedback smoke test.
 - Every lab has a happy path, recovery checkpoint, and optional stretch goal.
 - Starter tasks are intentionally separable to demonstrate parallel agents without merge contention.
 
+## Workshop operations
+
+The public default branch remains a starter, not an answer key. Operational
+state is prepared outside participant time:
+
+- one repository is pre-created from the template for each table of two or
+  three participants;
+- instructor scripts verify workstation, GitHub, and Azure readiness and seed
+  bounded GitHub work;
+- the deterministic security exercise exists only on an instructor-created lab
+  branch and draft pull request, never as active vulnerable code on the
+  template default branch;
+- completed checkpoint states remain in a private instructor repository whose
+  access excludes participants and are published into a team repository only
+  when recovery is needed;
+- checkpoint recovery creates a new branch and preserves participant history.
+
+GitHub Actions created with the repository token are not used as the sole
+source of seeded pull requests whose creation must trigger other workflows.
+Instructor preparation uses authenticated GitHub operations so CodeQL and
+other pull-request checks execute normally.
+
 ## Final workshop outcome
 
 Each team finishes with a reachable Azure App Service running the React/Express

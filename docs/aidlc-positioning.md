@@ -82,7 +82,10 @@ The workshop continues beyond code generation. Each team will work toward:
 
 ### Lab 1: OpenSpec and repository context
 
-We will map familiar AI-DLC concepts to OpenSpec and repository artifacts. The goal is to create a change contract that a new local or cloud agent can understand without relying on hidden conversation history.
+We will briefly compare Spec Kit and OpenSpec, then use OpenSpec as the
+canonical hands-on path. The goal is to create a change contract that a new
+local or cloud agent can understand without relying on hidden conversation
+history.
 
 ### Lab 2: visible multi-agent orchestration
 
@@ -108,10 +111,13 @@ A cloud coding agent will receive an issue and the repository harness, without t
 
 The GH-AW exercise will use evidence produced by the earlier labs:
 
-1. inspect the pull request, required checks, security result, and deployment;
-2. compare the evidence with the linked OpenSpec scenarios;
-3. produce a narrowly defined output, such as a PR comment, label, or follow-up issue;
-4. keep merge and protected-environment approval with people or deterministic policy.
+1. inspect the instructor-seeded CodeQL pull request, required checks, linked
+   OpenSpec work, and deployment evidence;
+2. produce one narrowly defined security-and-delivery output;
+3. use an agent to implement the bounded remediation;
+4. require CodeQL and human review before merging the fix;
+5. keep merge and protected-environment approval with people or deterministic
+   policy.
 
 ## The end-of-day test
 

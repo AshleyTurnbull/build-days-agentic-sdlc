@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   test: {
+    fileParallelism: false,
     globals: true,
     environment: "node",
     setupFiles: ["./tests/setup.ts"],

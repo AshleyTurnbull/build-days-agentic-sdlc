@@ -24,7 +24,9 @@ issue
   -> CI and security evidence
   -> infrastructure validation and deployment
   -> live application
-  -> GH-AW evidence result or labeled fallback
+  -> GH-AW security and delivery review
+  -> verified security-fix merge
+  -> final deployment evidence or labeled fallback
 ```
 
 Repair missing links. Do not rewrite history or claim unavailable controls.
@@ -55,6 +57,8 @@ A reviewer with only repository access should be able to answer:
 - What commit was deployed, by which authorized workflow and environment?
 - Where is the application URL and smoke-test evidence?
 - What did GH-AW report, and what authority did it not have?
+- Which deterministic security finding was fixed, and which scanner proved the
+  remediation before merge?
 
 ## 4. Leave the repository ready for handoff
 
@@ -74,7 +78,8 @@ change until its implementation, validation, and review are complete.
 - Linked specification and task receipts.
 - Independent CI/security/infrastructure results.
 - Successful protected deployment with URL and commit SHA.
-- GH-AW evidence output or labeled manual fallback.
+- GH-AW security/delivery output or labeled manual fallback.
+- Merged security remediation with passing CodeQL evidence.
 - Any follow-up issue for deferred work.
 
 ## Verification
