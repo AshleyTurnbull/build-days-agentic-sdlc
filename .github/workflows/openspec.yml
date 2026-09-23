@@ -45,7 +45,9 @@ jobs:
         run: gh extension install github/gh-aw --pin v0.88.8
       - name: Verify generated GH-AW lock
         run: |
-          gh aw compile --no-check-update
+          gh aw compile --no-check-update \
+            --action-mode action \
+            --action-tag 5e508589e03a7757a7e05b26e834292f5445bfb6
           git diff --exit-code -- '.github/workflows/*.lock.yml'
       - name: Summarize integrity evidence
         if: always()
@@ -53,5 +55,5 @@ jobs:
           {
             echo "## Repository integrity"
             echo "- OpenSpec validation: ${{ job.status }}"
-            echo "- Active GH-AW source changes must be compiled with \`gh aw compile\`."
+            echo "- Active GH-AW source changes must be compiled with the pinned command documented in Lab 5."
           } >> "$GITHUB_STEP_SUMMARY"

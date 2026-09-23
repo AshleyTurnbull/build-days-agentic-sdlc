@@ -103,7 +103,10 @@ validate the Markdown source. Tooling syntax can vary by installed GH-AW
 version, so use the repository guidance and `gh aw --help` rather than guessing.
 
 ```powershell
-gh aw compile security-delivery-review --no-check-update
+gh aw compile security-delivery-review `
+  --no-check-update `
+  --action-mode action `
+  --action-tag 5e508589e03a7757a7e05b26e834292f5445bfb6
 gh aw validate security-delivery-review --no-check-update
 git --no-pager diff --check
 ```
