@@ -54,7 +54,8 @@ describe("participant lab documentation", () => {
 
     expect(content).toContain("https://raw.githubusercontent.com/github/gh-aw/v0.88.8/create.md");
     expect(normalized).toContain("exactly one safe output");
-    expect(normalized).toContain("skip any instruction to upgrade or install from `main`");
+    expect(normalized).toContain("installing or converging the extension to that version when necessary");
+    expect(normalized).toContain("Do not use `main` or `latest`");
   });
 
   it("requires the specification pull request to merge before implementation", () => {

@@ -125,8 +125,9 @@ and the pinned workshop creation guide at
 > and priority, identify likely duplicates, ask clarifying questions when the
 > description is unclear, and route them to the right team members. Before
 > creating files, propose the trigger, permissions, tools, safe outputs, and
-> guardrails for human review. Use the repository-pinned GH-AW `v0.88.8`
-> compiler and skip any instruction to upgrade or install from `main`.
+> guardrails for human review. Inspect `.github/workflows/openspec.yml`, verify
+> the available GH-AW compiler, and install or converge it to the repository's
+> exact `v0.88.8` pin when necessary. Do not use `main` or `latest`.
 
 **Expect:** A workflow design before generated files or permissions are added.
 
