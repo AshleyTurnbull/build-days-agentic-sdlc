@@ -21,7 +21,10 @@ jobs:
     environment: workshop-validation
     steps:
       - uses: actions/checkout@v4
+      - name: Build Bicep
+        run: az bicep build --file infra/main.bicep
       - name: Verify OIDC configuration
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
         shell: bash
         env:
           CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -38,13 +41,13 @@ jobs:
             fi
           done
       - uses: azure/login@v2
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - name: Build Bicep
-        run: az bicep build --file infra/main.bicep
       - name: Validate deployment
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
         run: >
           az deployment group validate
           --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}"
@@ -52,6 +55,7 @@ jobs:
           --parameters infra/main.example.bicepparam
           teamIdentifier="${{ vars.TEAM_ID }}"
       - name: Preview Azure changes
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
         run: >
           az deployment group what-if
           --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}"
@@ -64,7 +68,13 @@ jobs:
         run: |
           {
             echo "## Azure infrastructure validation"
-            echo "- Authentication: GitHub OIDC"
-            echo "- Scope: \`${{ vars.AZURE_RESOURCE_GROUP }}\`"
-            echo "- Bicep build, deployment validation, and what-if completed."
+            echo "- Bicep compilation: completed"
+            echo "- Live Azure validation enabled: \`${{ vars.AZURE_LIVE_VALIDATION_ENABLED == 'true' }}\`"
+            if [ "${{ vars.AZURE_LIVE_VALIDATION_ENABLED }}" = "true" ]; then
+              echo "- Authentication: GitHub OIDC"
+              echo "- Scope: \`${{ vars.AZURE_RESOURCE_GROUP }}\`"
+              echo "- Deployment validation and what-if completed."
+            else
+              echo "- Deployment validation and what-if skipped until workshop quota is available."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"

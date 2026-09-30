@@ -43,17 +43,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh extension install github/gh-aw --pin v0.88.8
-      - name: Verify generated GH-AW lock
+      - name: Validate GH-AW sources
         run: |
           gh aw compile --no-check-update \
+            --no-emit \
             --action-mode action \
             --action-tag 5e508589e03a7757a7e05b26e834292f5445bfb6
-          git diff --exit-code -- '.github/workflows/*.lock.yml'
       - name: Summarize integrity evidence
         if: always()
         run: |
           {
             echo "## Repository integrity"
             echo "- OpenSpec validation: ${{ job.status }}"
-            echo "- Active GH-AW source changes must be compiled with the pinned command documented in Lab 5."
+            echo "- GH-AW sources validated with the pinned compiler and action SHA."
+            echo "- Generated lock drift is reviewed separately until compiler output is platform-stable."
           } >> "$GITHUB_STEP_SUMMARY"

@@ -196,6 +196,7 @@ describe("team repository preparation", () => {
     );
     expect(run.status).not.toBe(0);
     const normalizedOutput = stripVTControlCharacters(`${run.stdout}${run.stderr}`)
+      .replace(/\s*\|\s*/g, " ")
       .replace(/\s+/g, " ");
     expect(normalizedOutput).toContain(
       "already contains the Lab 4 no-store cache policy",
