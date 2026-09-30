@@ -1,5 +1,7 @@
 import {
   createFeedbackSchema,
+  authorSummaryQuerySchema,
+  authorSummarySchema,
   feedbackCategoryFilterSchema,
   feedbackCategories,
   feedbackListQuerySchema,
@@ -10,6 +12,29 @@ import {
 } from "../src/shared/contracts.js";
 
 describe("feedback contracts", () => {
+  it("trims author summary lookups and limits responses to aggregate fields", () => {
+    expect(
+      authorSummaryQuerySchema.parse({ displayName: "  Ada  " }),
+    ).toEqual({ displayName: "Ada" });
+    expect(authorSummaryQuerySchema.safeParse({ displayName: "   " }).success)
+      .toBe(false);
+    expect(
+      authorSummarySchema.parse({
+        displayName: "Ada",
+        feedbackCount: 2,
+        totalVotes: 3,
+      }),
+    ).toEqual({ displayName: "Ada", feedbackCount: 2, totalVotes: 3 });
+    expect(
+      authorSummarySchema.safeParse({
+        displayName: "Ada",
+        feedbackCount: 2,
+        totalVotes: 3,
+        feedbackIds: ["private-id"],
+      }).success,
+    ).toBe(false);
+  });
+
   it("accepts all and each supported category filter without normalizing", () => {
     expect(feedbackCategoryFilterSchema.parse("all")).toBe("all");
     for (const category of feedbackCategories) {

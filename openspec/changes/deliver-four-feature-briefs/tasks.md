@@ -22,9 +22,9 @@
 
 ## 4. Author-summary implementation PR
 
-- [ ] 4.1 Add the summary query using trimmed, exact case-sensitive display-name matching; return only the display name, feedback count, and total votes, with HTTP 200 and zero totals for an unknown name; verify aggregation, new feedback/votes, unknown names, matching, and response minimization with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
-- [ ] 4.2 Add the accessible summary interaction and loading, zero-result, success, and actionable error states; verify the user-facing summary states with `npm test -- tests/App.test.tsx`.
-- [ ] 4.3 Update `docs/features/author-summary.md` and the author-summary row in `docs/features/README.md`; verify the index keeps the other three statuses accurate and no profile or authentication claim is introduced.
+- [x] 4.1 Add the summary query using trimmed, exact case-sensitive display-name matching; return only the display name, feedback count, and total votes, with HTTP 200 and zero totals for an unknown name; verify aggregation, new feedback/votes, unknown names, matching, and response minimization with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
+- [x] 4.2 Add the accessible summary interaction and loading, zero-result, success, and actionable error states; verify the user-facing summary states with `npm test -- tests/App.test.tsx`.
+- [x] 4.3 Update `docs/features/author-summary.md` and the author-summary row in `docs/features/README.md`; verify the index keeps the other three statuses accurate and no profile or authentication claim is introduced.
 - [ ] 4.4 After PR 3's workspace is refreshed from the merged sorting PR, complete one independent PR targeting `main`; check off only its tasks, pass `npm run check`, `openspec validate --all`, and `git --no-pager diff --check`, satisfy configured CI and security checks, obtain human review, and capture protected Azure-backed summary evidence plus unchanged creation, voting, `/health`, and `/ready` behavior before merge.
 
 ## 5. Feedback-status implementation PR

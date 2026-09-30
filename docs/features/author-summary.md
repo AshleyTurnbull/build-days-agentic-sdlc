@@ -3,45 +3,42 @@
 ## User need
 
 Workshop users need a lightweight summary of participation without exposing
-private profile data.
+private profile data or treating a display name as an authenticated identity.
 
-## Comparable scope
+## Delivered behavior
 
-Add a derived summary for each display name containing:
+The board provides a **Display name to summarize** lookup. The API accepts
+`GET /api/feedback/summary?displayName=<name>`, trims surrounding whitespace,
+and matches the remaining display name exactly and case-sensitively. Its
+response contains only `displayName`, `feedbackCount`, and `totalVotes`.
+Unknown names return HTTP 200 with zero counts. A new lookup reflects feedback
+and votes added since any previous lookup.
 
-- number of feedback items submitted;
-- total votes received across those items.
-
-The board can show the summary in a small panel or detail view. Display names
-remain workshop-provided text and are not treated as authenticated identities.
+The board presents accessible loading, zero-result, success, and actionable
+error states; failed requests can be retried.
 
 ## Required scenarios
 
-1. A known display name returns the correct item and vote totals.
+1. A known display name returns its feedback-item count and the sum of votes
+   across those items.
 2. Multiple items by the same display name are aggregated.
-3. A display name with no items returns an empty/not-found result defined by
-   the approved specification.
-4. New feedback and votes update the summary.
-5. The response exposes no client vote identifiers or storage internals.
-
-## Suggested task seams
-
-- shared summary contract and validation;
-- derived storage/service query and tests;
-- Express summary endpoint and error mapping;
-- React summary display and accessibility tests;
-- evidence and documentation.
-
-Finalize actual path ownership only after inspecting the repository.
+3. An unknown display name returns HTTP 200 with zero feedback and zero votes.
+4. Surrounding whitespace is trimmed, while letter case is preserved for
+   exact matching.
+5. New feedback and votes appear in subsequent summary lookups.
+6. The response contains no client vote identifiers, feedback IDs, or storage
+   details.
+7. The UI exposes accessible loading, zero-result, success, and retryable
+   error states.
 
 ## Completion evidence
 
-- deterministic aggregation tests;
-- API response reviewed for data minimization;
-- UI states for loading, empty, success, and error;
-- deployed demonstration with non-sensitive workshop display names.
+- deterministic contract and API tests for aggregation, matching, updates,
+  unknown authors, and response minimization;
+- UI tests for loading, zero-result, success, and retryable error states;
+- deployed demonstration using non-sensitive workshop display names.
 
 ## Out of scope
 
-Authentication, leaderboards, profile pages, historical analytics, exports, and
-infrastructure changes.
+Authentication, leaderboards, profile pages, historical analytics, exports,
+and infrastructure changes.

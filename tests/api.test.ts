@@ -71,6 +71,125 @@ describe("feedback API", () => {
     expect(list.body.items[0].votes).toBe(1);
   });
 
+  it("aggregates a trimmed, exact-case author summary with only public totals", async () => {
+    const app = createApp({
+      storage: new InMemoryFeedbackStorage(),
+      logger: silentLogger,
+    });
+    const first = await request(app)
+      .post("/api/feedback")
+      .send({
+        title: "First item",
+        description: "First contribution.",
+        category: "content",
+        displayName: "Ada",
+      })
+      .expect(201);
+    await request(app)
+      .post(`/api/feedback/${first.body.feedback.id}/votes`)
+      .send({ clientId: "client-1" })
+      .expect(201);
+    await request(app)
+      .post("/api/feedback")
+      .send({
+        title: "Second item",
+        description: "Another contribution.",
+        category: "idea",
+        displayName: "Ada",
+      })
+      .expect(201);
+    const differentlyCased = await request(app)
+      .post("/api/feedback")
+      .send({
+        title: "Different author",
+        description: "Case matters.",
+        category: "idea",
+        displayName: "ada",
+      })
+      .expect(201);
+    await request(app)
+      .post(`/api/feedback/${differentlyCased.body.feedback.id}/votes`)
+      .send({ clientId: "client-2" })
+      .expect(201);
+
+    const summary = await request(app)
+      .get("/api/feedback/summary?displayName=%20Ada%20")
+      .expect(200);
+    expect(summary.body).toEqual({
+      displayName: "Ada",
+      feedbackCount: 2,
+      totalVotes: 1,
+    });
+    expect(Object.keys(summary.body).sort()).toEqual([
+      "displayName",
+      "feedbackCount",
+      "totalVotes",
+    ]);
+
+    await request(app)
+      .get("/api/feedback/summary?displayName=Ada%20Unknown")
+      .expect(200, {
+        displayName: "Ada Unknown",
+        feedbackCount: 0,
+        totalVotes: 0,
+      });
+  });
+
+  it("reflects feedback creation and votes in subsequent author summaries", async () => {
+    const app = createApp({
+      storage: new InMemoryFeedbackStorage(),
+      logger: silentLogger,
+    });
+    const created = await request(app)
+      .post("/api/feedback")
+      .send({
+        title: "Fresh idea",
+        description: "New contribution.",
+        category: "idea",
+        displayName: "Sam",
+      })
+      .expect(201);
+
+    await request(app)
+      .get("/api/feedback/summary?displayName=Sam")
+      .expect(200, { displayName: "Sam", feedbackCount: 1, totalVotes: 0 });
+    await request(app)
+      .post("/api/feedback")
+      .send({
+        title: "Second fresh idea",
+        description: "Another new contribution.",
+        category: "content",
+        displayName: "Sam",
+      })
+      .expect(201);
+    await request(app)
+      .get("/api/feedback/summary?displayName=Sam")
+      .expect(200, { displayName: "Sam", feedbackCount: 2, totalVotes: 0 });
+    await request(app)
+      .post(`/api/feedback/${created.body.feedback.id}/votes`)
+      .send({ clientId: "client-3" })
+      .expect(201);
+    await request(app)
+      .get("/api/feedback/summary?displayName=Sam")
+      .expect(200, { displayName: "Sam", feedbackCount: 2, totalVotes: 1 });
+  });
+
+  it("returns actionable validation for an invalid author summary query", async () => {
+    const app = createApp({
+      storage: new InMemoryFeedbackStorage(),
+      logger: silentLogger,
+    });
+    const response = await request(app)
+      .get("/api/feedback/summary?displayName=%20%20")
+      .expect(400);
+
+    expect(response.body.error).toMatchObject({
+      code: "VALIDATION_ERROR",
+      message: "Check the query parameters and try again.",
+      fieldErrors: { displayName: ["Enter a display name."] },
+    });
+  });
+
   it("filters feedback by supported category without mutating the full list", async () => {
     const storage = new InMemoryFeedbackStorage();
     await storage.create(

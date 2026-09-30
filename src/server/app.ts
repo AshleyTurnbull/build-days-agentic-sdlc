@@ -6,10 +6,12 @@ import express, {
 import { rateLimit } from "express-rate-limit";
 import { ZodError, type ZodType } from "zod";
 import {
+  authorSummaryQuerySchema,
   createFeedbackSchema,
   feedbackListQuerySchema,
   voteRequestSchema,
   type ApiError,
+  type AuthorSummary,
   type CreateFeedbackRequest,
   type VoteRequest,
 } from "../shared/contracts.js";
@@ -85,6 +87,36 @@ export const createApp = ({
         error: { code: "STORAGE_UNAVAILABLE", message: "Storage is unavailable." },
       });
     }
+  });
+
+  app.get("/api/feedback/summary", async (request, response) => {
+    const parsedQuery = authorSummaryQuerySchema.safeParse(request.query);
+    if (!parsedQuery.success) {
+      const fieldErrors: Record<string, string[]> = {};
+      for (const issue of parsedQuery.error.issues) {
+        const field = String(issue.path[0] ?? "query");
+        (fieldErrors[field] ??= []).push(issue.message);
+      }
+      response.status(400).json({
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Check the query parameters and try again.",
+          fieldErrors,
+        },
+      } satisfies ApiError);
+      return;
+    }
+
+    const displayName = parsedQuery.data.displayName;
+    const matchingItems = (await storage.list()).filter(
+      (item) => item.displayName === displayName,
+    );
+    const summary: AuthorSummary = {
+      displayName,
+      feedbackCount: matchingItems.length,
+      totalVotes: matchingItems.reduce((total, item) => total + item.votes, 0),
+    };
+    response.json(summary);
   });
 
   app.get("/api/feedback", async (request, response) => {
