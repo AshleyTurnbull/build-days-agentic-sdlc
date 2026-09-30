@@ -71,6 +71,64 @@ describe("feedback API", () => {
     expect(list.body.items[0].votes).toBe(1);
   });
 
+  it("filters feedback by supported category without mutating the full list", async () => {
+    const storage = new InMemoryFeedbackStorage();
+    await storage.create(
+      {
+        title: "Content feedback",
+        description: "Add an example.",
+        category: "content",
+        displayName: "Ada",
+      },
+      { id: "content-1", createdAt: "2025-01-01T00:00:00.000Z" },
+    );
+    await storage.create(
+      {
+        title: "Tooling feedback",
+        description: "Improve the tools.",
+        category: "tooling",
+        displayName: "Lin",
+      },
+      { id: "tooling-1", createdAt: "2025-01-02T00:00:00.000Z" },
+    );
+    const app = createApp({ storage, logger: silentLogger });
+
+    const filtered = await request(app)
+      .get("/api/feedback?category=tooling")
+      .expect(200);
+    expect(filtered.body.items).toHaveLength(1);
+    expect(filtered.body.items[0].category).toBe("tooling");
+
+    const all = await request(app)
+      .get("/api/feedback?category=all")
+      .expect(200);
+    expect(all.body.items).toHaveLength(2);
+    expect(await storage.list()).toHaveLength(2);
+  });
+
+  it.each(["unknown", "Content", "content "])(
+    "rejects unsupported category query %s without normalizing it",
+    async (category) => {
+      const app = createApp({
+        storage: new InMemoryFeedbackStorage(),
+        logger: silentLogger,
+      });
+      const response = await request(app)
+        .get(`/api/feedback?category=${encodeURIComponent(category)}`)
+        .expect(400);
+
+      expect(response.body.error).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Check the query parameters and try again.",
+        fieldErrors: {
+          category: [
+            "Choose all, content, facilitation, tooling, or idea.",
+          ],
+        },
+      });
+    },
+  );
+
   it("returns actionable validation without persisting", async () => {
     const storage = new InMemoryFeedbackStorage();
     const app = createApp({ storage, logger: silentLogger });

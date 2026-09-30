@@ -7,6 +7,7 @@ import { rateLimit } from "express-rate-limit";
 import { ZodError, type ZodType } from "zod";
 import {
   createFeedbackSchema,
+  feedbackListQuerySchema,
   voteRequestSchema,
   type ApiError,
   type CreateFeedbackRequest,
@@ -85,8 +86,32 @@ export const createApp = ({
     }
   });
 
-  app.get("/api/feedback", async (_request, response) => {
-    response.json({ items: await storage.list() });
+  app.get("/api/feedback", async (request, response) => {
+    const parsedQuery = feedbackListQuerySchema.safeParse(request.query);
+    if (!parsedQuery.success) {
+      const fieldErrors: Record<string, string[]> = {};
+      for (const issue of parsedQuery.error.issues) {
+        const field = String(issue.path[0] ?? "query");
+        (fieldErrors[field] ??= []).push(issue.message);
+      }
+      response.status(400).json({
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Check the query parameters and try again.",
+          fieldErrors,
+        },
+      } satisfies ApiError);
+      return;
+    }
+
+    const items = await storage.list();
+    const category = parsedQuery.data.category ?? "all";
+    response.json({
+      items:
+        category === "all"
+          ? items
+          : items.filter((item) => item.category === category),
+    });
   });
 
   app.post(

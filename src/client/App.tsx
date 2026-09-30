@@ -1,4 +1,10 @@
-import { useEffect, useId, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useState,
+  type FormEvent,
+} from "react";
 import {
   feedbackCategories,
   fieldLimits,
@@ -19,6 +25,19 @@ const emptyForm: CreateFeedbackRequest = {
   displayName: "",
 };
 
+const categoryFromUrl = (): string =>
+  new URLSearchParams(window.location.search).get("category") ?? "all";
+
+const updateCategoryUrl = (category: string): void => {
+  const url = new URL(window.location.href);
+  if (category === "all") {
+    url.searchParams.delete("category");
+  } else {
+    url.searchParams.set("category", category);
+  }
+  window.history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
+};
+
 const getClientId = (): string => {
   const key = "workshop-feedback-client-id";
   const existing = localStorage.getItem(key);
@@ -30,6 +49,7 @@ const getClientId = (): string => {
 
 export function App() {
   const [items, setItems] = useState<Feedback[]>([]);
+  const [category, setCategory] = useState(categoryFromUrl);
   const [form, setForm] = useState(emptyForm);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
@@ -40,22 +60,33 @@ export function App() {
   const [notice, setNotice] = useState<string>();
   const formStatusId = useId();
 
-  useEffect(() => {
-    void load();
-  }, []);
-
-  async function load() {
+  const load = useCallback(async (selectedCategory: string) => {
     setLoading(true);
     setLoadFailed(false);
     setError(undefined);
     try {
-      setItems(await listFeedback());
+      setItems(await listFeedback(selectedCategory));
     } catch (loadError) {
       setLoadFailed(true);
       setError(messageFor(loadError));
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    void load(category);
+  }, [category, load]);
+
+  useEffect(() => {
+    const syncCategory = () => setCategory(categoryFromUrl());
+    window.addEventListener("popstate", syncCategory);
+    return () => window.removeEventListener("popstate", syncCategory);
+  }, []);
+
+  function selectCategory(selectedCategory: string) {
+    updateCategoryUrl(selectedCategory);
+    setCategory(selectedCategory);
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -66,7 +97,9 @@ export function App() {
     setFieldErrors({});
     try {
       const feedback = await createFeedback(form);
-      setItems((current) => [feedback, ...current]);
+      if (category === "all" || feedback.category === category) {
+        setItems((current) => [feedback, ...current]);
+      }
       setForm(emptyForm);
       setNotice("Feedback added to the board.");
     } catch (submitError) {
@@ -169,7 +202,7 @@ export function App() {
               <div className="error">
                 <span>{error}</span>
                 {loadFailed && (
-                  <button type="button" onClick={() => void load()}>
+                  <button type="button" onClick={() => void load(category)}>
                     Try again
                   </button>
                 )}
@@ -189,6 +222,30 @@ export function App() {
               {items.length}
             </span>
           </div>
+          <label className="filter-control">
+            Filter by category
+            <select
+              name="categoryFilter"
+              value={category}
+              onChange={(event) => selectCategory(event.currentTarget.value)}
+            >
+              <option value="all">All categories</option>
+              {feedbackCategories.map((supportedCategory) => (
+                <option key={supportedCategory} value={supportedCategory}>
+                  {supportedCategory[0]?.toUpperCase()}
+                  {supportedCategory.slice(1)}
+                </option>
+              ))}
+              {category !== "all" &&
+                !feedbackCategories.some(
+                  (supportedCategory) => supportedCategory === category,
+                ) && (
+                  <option value={category}>
+                    Unsupported category: {category || "(empty)"}
+                  </option>
+                )}
+            </select>
+          </label>
           {loading ? (
             <p className="state" role="status">
               Loading feedback…
@@ -199,9 +256,24 @@ export function App() {
               <p>Use Try again to reload the board.</p>
             </div>
           ) : items.length === 0 ? (
-            <div className="state">
-              <h3>No feedback yet</h3>
-              <p>Start the board with the first workshop idea.</p>
+            <div className="state" role="status">
+              {category === "all" ? (
+                <>
+                  <h3>No feedback yet</h3>
+                  <p>Start the board with the first workshop idea.</p>
+                </>
+              ) : (
+                <>
+                  <h3>No feedback in this category</h3>
+                  <p>Choose another category or return to all feedback.</p>
+                  <button
+                    type="button"
+                    onClick={() => selectCategory("all")}
+                  >
+                    Clear category filter
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <ul className="feedback-list">
