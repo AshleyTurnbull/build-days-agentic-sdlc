@@ -7,10 +7,13 @@ import {
 } from "react";
 import {
   feedbackCategories,
+  feedbackSortOptions,
+  feedbackSortSchema,
   fieldLimits,
   type CreateFeedbackRequest,
   type Feedback,
 } from "../shared/contracts.js";
+import { sortFeedback } from "../shared/feedback-sorting.js";
 import {
   ApiRequestError,
   createFeedback,
@@ -28,12 +31,20 @@ const emptyForm: CreateFeedbackRequest = {
 const categoryFromUrl = (): string =>
   new URLSearchParams(window.location.search).get("category") ?? "all";
 
-const updateCategoryUrl = (category: string): void => {
+const sortFromUrl = (): string =>
+  new URLSearchParams(window.location.search).get("sort") ?? "newest";
+
+const updateBoardUrl = (category: string, sort: string): void => {
   const url = new URL(window.location.href);
   if (category === "all") {
     url.searchParams.delete("category");
   } else {
     url.searchParams.set("category", category);
+  }
+  if (sort === "newest") {
+    url.searchParams.delete("sort");
+  } else {
+    url.searchParams.set("sort", sort);
   }
   window.history.pushState({}, "", `${url.pathname}${url.search}${url.hash}`);
 };
@@ -50,6 +61,7 @@ const getClientId = (): string => {
 export function App() {
   const [items, setItems] = useState<Feedback[]>([]);
   const [category, setCategory] = useState(categoryFromUrl);
+  const [sort, setSort] = useState(sortFromUrl);
   const [form, setForm] = useState(emptyForm);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
@@ -59,13 +71,20 @@ export function App() {
   const [loadFailed, setLoadFailed] = useState(false);
   const [notice, setNotice] = useState<string>();
   const formStatusId = useId();
+  const parsedSort = feedbackSortSchema.safeParse(sort);
+  const displayedItems = parsedSort.success
+    ? sortFeedback(items, parsedSort.data)
+    : items;
 
-  const load = useCallback(async (selectedCategory: string) => {
+  const load = useCallback(async (
+    selectedCategory: string,
+    selectedSort: string,
+  ) => {
     setLoading(true);
     setLoadFailed(false);
     setError(undefined);
     try {
-      setItems(await listFeedback(selectedCategory));
+      setItems(await listFeedback(selectedCategory, selectedSort));
     } catch (loadError) {
       setLoadFailed(true);
       setError(messageFor(loadError));
@@ -75,18 +94,26 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    void load(category);
-  }, [category, load]);
+    void load(category, sort);
+  }, [category, sort, load]);
 
   useEffect(() => {
-    const syncCategory = () => setCategory(categoryFromUrl());
-    window.addEventListener("popstate", syncCategory);
-    return () => window.removeEventListener("popstate", syncCategory);
+    const syncBoardState = () => {
+      setCategory(categoryFromUrl());
+      setSort(sortFromUrl());
+    };
+    window.addEventListener("popstate", syncBoardState);
+    return () => window.removeEventListener("popstate", syncBoardState);
   }, []);
 
   function selectCategory(selectedCategory: string) {
-    updateCategoryUrl(selectedCategory);
+    updateBoardUrl(selectedCategory, sort);
     setCategory(selectedCategory);
+  }
+
+  function selectSort(selectedSort: string) {
+    updateBoardUrl(category, selectedSort);
+    setSort(selectedSort);
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -202,7 +229,10 @@ export function App() {
               <div className="error">
                 <span>{error}</span>
                 {loadFailed && (
-                  <button type="button" onClick={() => void load(category)}>
+                  <button
+                    type="button"
+                    onClick={() => void load(category, sort)}
+                  >
                     Try again
                   </button>
                 )}
@@ -246,6 +276,24 @@ export function App() {
                 )}
             </select>
           </label>
+          <label className="filter-control">
+            Sort feedback
+            <select
+              name="feedbackSort"
+              value={sort}
+              onChange={(event) => selectSort(event.currentTarget.value)}
+            >
+              <option value="newest">Newest first</option>
+              <option value="most-votes">Most votes first</option>
+              {!feedbackSortOptions.some(
+                (supportedSort) => supportedSort === sort,
+              ) && (
+                <option value={sort}>
+                  Unsupported sort: {sort || "(empty)"}
+                </option>
+              )}
+            </select>
+          </label>
           {loading ? (
             <p className="state" role="status">
               Loading feedback…
@@ -277,7 +325,7 @@ export function App() {
             </div>
           ) : (
             <ul className="feedback-list">
-              {items.map((item) => (
+              {displayedItems.map((item) => (
                 <li className="feedback-card" key={item.id}>
                   <div className="card-topline">
                     <span className={`category category-${item.category}`}>
