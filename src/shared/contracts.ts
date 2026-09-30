@@ -7,6 +7,16 @@ export const feedbackCategories = [
   "idea",
 ] as const;
 
+export const feedbackCategoryFilters = ["all", ...feedbackCategories] as const;
+
+export const feedbackCategoryFilterSchema = z.enum(feedbackCategoryFilters, {
+  error: "Choose all, content, facilitation, tooling, or idea.",
+});
+
+export const feedbackListQuerySchema = z.object({
+  category: feedbackCategoryFilterSchema.optional(),
+});
+
 export const fieldLimits = {
   title: 100,
   description: 1_000,
@@ -39,6 +49,9 @@ export const voteRequestSchema = z.object({
 });
 
 export type FeedbackCategory = (typeof feedbackCategories)[number];
+export type FeedbackCategoryFilter =
+  (typeof feedbackCategoryFilters)[number];
+export type FeedbackListQuery = z.infer<typeof feedbackListQuerySchema>;
 export type CreateFeedbackRequest = z.infer<typeof createFeedbackSchema>;
 export type VoteRequest = z.infer<typeof voteRequestSchema>;
 

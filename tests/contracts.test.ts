@@ -1,10 +1,26 @@
 import {
   createFeedbackSchema,
+  feedbackCategoryFilterSchema,
+  feedbackCategories,
   fieldLimits,
   voteRequestSchema,
 } from "../src/shared/contracts.js";
 
 describe("feedback contracts", () => {
+  it("accepts all and each supported category filter without normalizing", () => {
+    expect(feedbackCategoryFilterSchema.parse("all")).toBe("all");
+    for (const category of feedbackCategories) {
+      expect(feedbackCategoryFilterSchema.parse(category)).toBe(category);
+    }
+
+    expect(feedbackCategoryFilterSchema.safeParse("Content").success).toBe(
+      false,
+    );
+    expect(feedbackCategoryFilterSchema.safeParse(" content ").success).toBe(
+      false,
+    );
+  });
+
   it("normalizes valid feedback", () => {
     expect(
       createFeedbackSchema.parse({

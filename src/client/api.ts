@@ -33,8 +33,14 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
   return body as T;
 }
 
-export const listFeedback = async (): Promise<Feedback[]> => {
-  const result = await request<{ items: Feedback[] }>("/api/feedback");
+export const listFeedback = async (category = "all"): Promise<Feedback[]> => {
+  const query =
+    category === "all"
+      ? ""
+      : `?${new URLSearchParams({ category }).toString()}`;
+  const result = await request<{ items: Feedback[] }>(
+    `/api/feedback${query}`,
+  );
   return result.items;
 };
 

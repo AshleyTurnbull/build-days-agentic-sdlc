@@ -2,15 +2,15 @@
 
 ## 1. Specification gate and isolated workspaces
 
-- [ ] 1.1 Obtain human approval and merge this OpenSpec proposal, four delta specs, design, and tasks into `AshleyTurnbull/build-days-agentic-sdlc` `main`; verify the approved specs record workshop-only status access, HTTP 400 query validation, zero-valued unknown-author summaries, legacy status defaulting to `new`, and trimmed exact case-sensitive author matching.
+- [x] 1.1 Obtain human approval and merge this OpenSpec proposal, four delta specs, design, and tasks into `AshleyTurnbull/build-days-agentic-sdlc` `main`; verify the approved specs record workshop-only status access, HTTP 400 query validation, zero-valued unknown-author summaries, legacy status defaulting to `new`, and trimmed exact case-sensitive author matching.
 - [ ] 1.2 Create four isolated implementation workspaces for category filtering, board sorting, author summary, and feedback status; verify each has a separate worktree and branch targeting the personal fork's `main`, and keep only the next scheduled feature active.
 - [ ] 1.3 Before each feature starts, refresh its workspace from the latest `main`; verify shared source, test, feature-index, and OpenSpec task paths are not being edited concurrently and that the feature branch is not stacked on another feature branch.
 
 ## 2. Category-filtering implementation PR
 
-- [ ] 2.1 Extend the shared query contract and `/api/feedback` handling for the supported categories and all-categories default; return actionable HTTP 400 errors for unsupported values and verify supported/unsupported cases with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
-- [ ] 2.2 Add the accessible category control, selected URL state, matching-item rendering, empty state, and clear-filter behavior; verify the current full list is restored with `npm test -- tests/App.test.tsx`.
-- [ ] 2.3 Update `docs/features/category-filtering.md` to describe delivered behavior and replace the false all-unimplemented statement in `docs/features/README.md` with a four-feature delivery table; verify the table marks category filtering delivered and the other briefs accurately pending.
+- [x] 2.1 Extend the shared query contract and `/api/feedback` handling for the supported categories and all-categories default; return actionable HTTP 400 errors for unsupported values and verify supported/unsupported cases with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
+- [x] 2.2 Add the accessible category control, selected URL state, matching-item rendering, empty state, and clear-filter behavior; verify the current full list is restored with `npm test -- tests/App.test.tsx`.
+- [x] 2.3 Update `docs/features/category-filtering.md` to describe delivered behavior and replace the false all-unimplemented statement in `docs/features/README.md` with a four-feature delivery table; verify the table marks category filtering delivered and the other briefs accurately pending.
 - [ ] 2.4 Complete this as one independent PR targeting `main`; check off only its tasks in this change, pass `npm run check`, `openspec validate --all`, and `git --no-pager diff --check`, satisfy the configured CI and security checks, obtain human review, and capture protected Azure-backed evidence for filtering plus unchanged creation, voting, `/health`, and `/ready` behavior before merge.
 
 ## 3. Board-sorting implementation PR
@@ -38,4 +38,3 @@
 
 - [ ] 6.1 Verify the four implementation PRs are independently merged to the personal fork's `main` in the staged order and each links its approved scenarios, focused test results, full checks, review, and protected deployment evidence; confirm no work or PR targets `VeVarunSharma/build-days-agentic-sdlc`.
 - [ ] 6.2 Review `docs/features/README.md` and all four briefs against the delivered behavior; verify none claims all four remain unimplemented and no unrelated lab, infrastructure, workflow, or architecture files changed.
-

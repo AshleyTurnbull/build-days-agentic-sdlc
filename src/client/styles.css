@@ -193,6 +193,11 @@ form > button {
   padding: 1.75rem;
 }
 
+.filter-control {
+  max-width: 20rem;
+  margin: 1.25rem 0;
+}
+
 .board-heading,
 .card-topline,
 .card-footer {
@@ -294,6 +299,15 @@ time,
   margin: 2rem 0;
   padding: 3rem 1rem;
   text-align: center;
+}
+
+.state button {
+  color: #4937a4;
+  background: #f4f1ff;
+  border: 1px solid #d8d0ff;
+  border-radius: 0.55rem;
+  padding: 0.65rem 0.9rem;
+  font-weight: 800;
 }
 
 @media (max-width: 760px) {
