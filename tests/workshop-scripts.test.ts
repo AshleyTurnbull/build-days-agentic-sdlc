@@ -1,6 +1,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { stripVTControlCharacters } from "node:util";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const root = resolve(import.meta.dirname, "..");
@@ -194,7 +195,9 @@ describe("team repository preparation", () => {
       { cwd: root, encoding: "utf8" },
     );
     expect(run.status).not.toBe(0);
-    expect(`${run.stdout}${run.stderr}`).toContain(
+    const normalizedOutput = stripVTControlCharacters(`${run.stdout}${run.stderr}`)
+      .replace(/\s+/g, " ");
+    expect(normalizedOutput).toContain(
       "already contains the Lab 4 no-store cache policy",
     );
   }, 20_000);
