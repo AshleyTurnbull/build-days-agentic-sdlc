@@ -198,6 +198,44 @@ form > button {
   margin: 1.25rem 0;
 }
 
+.author-summary {
+  max-width: 32rem;
+  border-top: 1px solid #e2e7f0;
+  margin: 1.5rem 0;
+  padding-top: 1rem;
+}
+
+.author-summary h3 {
+  margin-bottom: 0.75rem;
+}
+
+.author-summary form {
+  grid-template-columns: 1fr auto;
+  align-items: end;
+}
+
+.author-summary form label {
+  grid-column: 1 / -1;
+}
+
+.author-summary form button {
+  color: white;
+  background: #5b45c8;
+  border: 0;
+  border-radius: 0.55rem;
+  padding: 0.72rem 1rem;
+  font-weight: 800;
+}
+
+.summary-result {
+  margin-top: 1rem;
+  color: #344054;
+}
+
+.summary-result p {
+  margin-bottom: 0;
+}
+
 .board-heading,
 .card-topline,
 .card-footer {

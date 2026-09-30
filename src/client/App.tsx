@@ -10,6 +10,7 @@ import {
   feedbackSortOptions,
   feedbackSortSchema,
   fieldLimits,
+  type AuthorSummary,
   type CreateFeedbackRequest,
   type Feedback,
 } from "../shared/contracts.js";
@@ -17,6 +18,7 @@ import { sortFeedback } from "../shared/feedback-sorting.js";
 import {
   ApiRequestError,
   createFeedback,
+  getAuthorSummary,
   listFeedback,
   voteForFeedback,
 } from "./api.js";
@@ -63,6 +65,11 @@ export function App() {
   const [category, setCategory] = useState(categoryFromUrl);
   const [sort, setSort] = useState(sortFromUrl);
   const [form, setForm] = useState(emptyForm);
+  const [summaryName, setSummaryName] = useState("");
+  const [lastSummaryName, setLastSummaryName] = useState("");
+  const [authorSummary, setAuthorSummary] = useState<AuthorSummary>();
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -160,6 +167,25 @@ export function App() {
     } finally {
       setVotingId(undefined);
     }
+  }
+
+  async function loadAuthorSummary(displayName: string) {
+    setSummaryLoading(true);
+    setSummaryError(undefined);
+    setAuthorSummary(undefined);
+    try {
+      setAuthorSummary(await getAuthorSummary(displayName));
+    } catch (summaryLoadError) {
+      setSummaryError(messageFor(summaryLoadError));
+    } finally {
+      setSummaryLoading(false);
+    }
+  }
+
+  async function submitSummary(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLastSummaryName(summaryName);
+    await loadAuthorSummary(summaryName);
   }
 
   return (
@@ -294,6 +320,59 @@ export function App() {
               )}
             </select>
           </label>
+          <section className="author-summary" aria-labelledby="author-summary-title">
+            <h3 id="author-summary-title">Author summary</h3>
+            <form onSubmit={(event) => void submitSummary(event)}>
+              <label htmlFor="summary-display-name">
+                Display name to summarize
+              </label>
+              <input
+                id="summary-display-name"
+                name="summaryDisplayName"
+                value={summaryName}
+                maxLength={fieldLimits.displayName}
+                required
+                onChange={(event) => setSummaryName(event.currentTarget.value)}
+              />
+              <button type="submit" disabled={summaryLoading}>
+                {summaryLoading ? "Loading summary…" : "Show summary"}
+              </button>
+            </form>
+            <div aria-live="polite" aria-busy={summaryLoading}>
+              {summaryLoading ? (
+                <p className="state" role="status">
+                  Loading author summary…
+                </p>
+              ) : summaryError ? (
+                <div className="error" role="alert">
+                  <span>{summaryError}</span>
+                  <button
+                    type="button"
+                    onClick={() => void loadAuthorSummary(lastSummaryName)}
+                  >
+                    Try again
+                  </button>
+                </div>
+              ) : authorSummary ? (
+                <div className="summary-result" role="status">
+                  {authorSummary.feedbackCount === 0 ? (
+                    <p>
+                      No feedback found for {authorSummary.displayName}. 0
+                      feedback items and 0 total votes.
+                    </p>
+                  ) : (
+                    <p>
+                      {authorSummary.displayName} submitted{" "}
+                      {authorSummary.feedbackCount} feedback{" "}
+                      {authorSummary.feedbackCount === 1 ? "item" : "items"}{" "}
+                      and received {authorSummary.totalVotes} total{" "}
+                      {authorSummary.totalVotes === 1 ? "vote" : "votes"}.
+                    </p>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </section>
           {loading ? (
             <p className="state" role="status">
               Loading feedback…

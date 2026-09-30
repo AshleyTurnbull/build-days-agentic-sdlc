@@ -1,4 +1,5 @@
 import type {
+  AuthorSummary,
   ApiError,
   CreateFeedbackRequest,
   Feedback,
@@ -46,6 +47,15 @@ export const listFeedback = async (
     `/api/feedback${query}`,
   );
   return result.items;
+};
+
+export const getAuthorSummary = (
+  displayName: string,
+): Promise<AuthorSummary> => {
+  const params = new URLSearchParams({ displayName });
+  return request<AuthorSummary>(
+    `/api/feedback/summary?${params.toString()}`,
+  );
 };
 
 export const createFeedback = async (

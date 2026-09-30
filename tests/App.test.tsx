@@ -187,7 +187,9 @@ describe("feedback board", () => {
       expect.anything(),
     );
     expect(
-      screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+      [...screen.getByRole("list").querySelectorAll("h3")].map(
+        (heading) => heading.textContent,
+      ),
     ).toEqual(["Popular idea", "Recent idea"]);
 
     await user.selectOptions(screen.getByLabelText("Sort feedback"), "newest");
@@ -240,7 +242,9 @@ describe("feedback board", () => {
     expect(await screen.findByRole("heading", { name: "Popular idea" }))
       .toBeVisible();
     expect(
-      screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+      [...screen.getByRole("list").querySelectorAll("h3")].map(
+        (heading) => heading.textContent,
+      ),
     ).toEqual(["Popular idea", "Recent idea"]);
     await user.click(
       screen.getByRole("button", { name: "Vote for Recent idea. 0 votes" }),
@@ -248,7 +252,9 @@ describe("feedback board", () => {
 
     await waitFor(() =>
       expect(
-        screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+        [...screen.getByRole("list").querySelectorAll("h3")].map(
+          (heading) => heading.textContent,
+        ),
       ).toEqual(["Recent idea", "Popular idea"]),
     );
     expect(
@@ -344,5 +350,98 @@ describe("feedback board", () => {
     expect(await screen.findByText("The board could not load.")).toBeVisible();
     await user.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByRole("heading", { name: "No feedback yet" })).toBeVisible();
+  });
+
+  it("shows author summary loading, zero-result, and success states", async () => {
+    let resolveSummary!: (response: Response) => void;
+    vi.spyOn(globalThis, "fetch").mockImplementation((input) => {
+      if (String(input).startsWith("/api/feedback/summary")) {
+        return new Promise((resolve) => {
+          resolveSummary = resolve;
+        });
+      }
+      return Promise.resolve(jsonResponse({ items: [] }));
+    });
+    const user = userEvent.setup();
+    render(<App />);
+    await screen.findByRole("heading", { name: "No feedback yet" });
+
+    await user.type(
+      screen.getByLabelText("Display name to summarize"),
+      "Nobody",
+    );
+    await user.click(screen.getByRole("button", { name: "Show summary" }));
+    expect(screen.getByText("Loading author summary…")).toBeVisible();
+    expect(screen.getByText("Loading author summary…")).toHaveAttribute(
+      "role",
+      "status",
+    );
+    resolveSummary(
+      jsonResponse({
+        displayName: "Nobody",
+        feedbackCount: 0,
+        totalVotes: 0,
+      }),
+    );
+    expect(
+      await screen.findByText(
+        "No feedback found for Nobody. 0 feedback items and 0 total votes.",
+      ),
+    ).toBeVisible();
+
+    await user.clear(screen.getByLabelText("Display name to summarize"));
+    await user.type(
+      screen.getByLabelText("Display name to summarize"),
+      "Ada",
+    );
+    await user.click(screen.getByRole("button", { name: "Show summary" }));
+    await waitFor(() =>
+      expect(globalThis.fetch).toHaveBeenCalledWith(
+        "/api/feedback/summary?displayName=Ada",
+        expect.anything(),
+      ),
+    );
+    resolveSummary(
+      jsonResponse({ displayName: "Ada", feedbackCount: 2, totalVotes: 3 }),
+    );
+    expect(
+      await screen.findByText("Ada submitted 2 feedback items and received 3 total votes."),
+    ).toBeVisible();
+  });
+
+  it("shows an actionable author summary error and retries the lookup", async () => {
+    let shouldFail = true;
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      if (String(input).startsWith("/api/feedback/summary")) {
+        if (shouldFail) {
+          shouldFail = false;
+          throw new Error("The summary service is unavailable.");
+        }
+        return jsonResponse({
+          displayName: "Ada",
+          feedbackCount: 1,
+          totalVotes: 2,
+        });
+      }
+      return jsonResponse({ items: [] });
+    });
+    const user = userEvent.setup();
+    render(<App />);
+    await screen.findByRole("heading", { name: "No feedback yet" });
+    await user.type(
+      screen.getByLabelText("Display name to summarize"),
+      "Ada",
+    );
+    await user.click(screen.getByRole("button", { name: "Show summary" }));
+
+    expect(
+      await screen.findByText("The summary service is unavailable."),
+    ).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    expect(
+      await screen.findByText(
+        "Ada submitted 1 feedback item and received 2 total votes.",
+      ),
+    ).toBeVisible();
   });
 });

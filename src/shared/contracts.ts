@@ -30,6 +30,22 @@ export const fieldLimits = {
   clientId: 100,
 } as const;
 
+export const authorSummaryQuerySchema = z.object({
+  displayName: z
+    .string()
+    .trim()
+    .min(1, "Enter a display name.")
+    .max(fieldLimits.displayName),
+});
+
+export const authorSummarySchema = z
+  .object({
+    displayName: z.string().min(1).max(fieldLimits.displayName),
+    feedbackCount: z.number().int().nonnegative(),
+    totalVotes: z.number().int().nonnegative(),
+  })
+  .strict();
+
 export const createFeedbackSchema = z.object({
   title: z.string().trim().min(1, "Enter a title.").max(fieldLimits.title),
   description: z
@@ -59,6 +75,8 @@ export type FeedbackCategoryFilter =
   (typeof feedbackCategoryFilters)[number];
 export type FeedbackSort = (typeof feedbackSortOptions)[number];
 export type FeedbackListQuery = z.infer<typeof feedbackListQuerySchema>;
+export type AuthorSummaryQuery = z.infer<typeof authorSummaryQuerySchema>;
+export type AuthorSummary = z.infer<typeof authorSummarySchema>;
 export type CreateFeedbackRequest = z.infer<typeof createFeedbackSchema>;
 export type VoteRequest = z.infer<typeof voteRequestSchema>;
 
