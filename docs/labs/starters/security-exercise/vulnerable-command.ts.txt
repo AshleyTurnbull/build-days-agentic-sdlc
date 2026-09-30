@@ -1,0 +1,19 @@
+import { exec } from "node:child_process";
+import type { Request, Response } from "express";
+
+// Synthetic Lab 5 fixture. This file is copied only to the exercise branch.
+export function runTrainingDiagnostic(
+  request: Request,
+  response: Response,
+): void {
+  const target = String(request.query.target ?? "localhost");
+
+  exec(`printf "checking ${target}"`, (error, stdout) => {
+    if (error) {
+      response.status(500).json({ status: "failed" });
+      return;
+    }
+
+    response.json({ status: "complete", output: stdout });
+  });
+}

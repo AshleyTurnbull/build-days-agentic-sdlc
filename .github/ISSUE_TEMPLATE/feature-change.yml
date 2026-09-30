@@ -1,0 +1,46 @@
+name: Feature change
+description: Propose a material product or behavior change that starts with OpenSpec.
+title: "[Feature]: "
+labels: ["feature", "needs-openspec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not begin implementation until the proposal, capability specs, design, and tasks are reviewable.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the user-visible outcome and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Acceptance scenarios
+      description: List observable Given/When/Then or When/Then scenarios, including failure behavior.
+    validations:
+      required: true
+  - type: input
+    id: openspec
+    attributes:
+      label: OpenSpec change
+      description: Link or repository path, for example openspec/changes/change-name/.
+      placeholder: openspec/changes/change-name/
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Boundaries and risks
+      description: Note owned paths, dependencies, security considerations, and explicit non-goals.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Required evidence
+      description: Identify tests, checks, deployment proof, or screenshots needed for review.
+    validations:
+      required: true
+
