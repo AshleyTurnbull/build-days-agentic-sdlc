@@ -8,6 +8,14 @@
 
 # CSI Build Day: Agentic SDLC on GitHub
 
+## Goals
+
+- Get familiar with AI-native engineering using GitHub.
+- Learn how to instrument workflows beyond the traditional hands-on-keyboard approach.
+- Explore the tools available to help you get there.
+- Build in a way that works for you.
+- Most importantly, have fun!
+
 This repository is the starter template for a hands-on workshop that takes a change through the complete agentic software delivery loop:
 
 > Issue -> OpenSpec proposal -> design -> tasks -> implementation -> tests -> pull request -> review -> security fix -> merge -> Azure deployment evidence
