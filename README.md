@@ -1,3 +1,11 @@
+```text
+      .--------.
+     /  .--.    \     prompt -> spec -> plan -> code -> prove
+    |  | () |    |             AGENTIC SDLC
+     \  '--'    /     humans set intent; evidence earns trust
+      '---+----'
+```
+
 # CSI Build Day: Agentic SDLC on GitHub
 
 This repository is the starter template for a hands-on workshop that takes a change through the complete agentic software delivery loop:
@@ -10,10 +18,43 @@ The workshop combines three complementary practices:
 - **Harness engineering** makes the repository legible, constrained, and self-verifying for every coding agent.
 - **GitHub platform automation** connects Copilot, Actions, security scanning, Azure Verified Modules (AVM), and GitHub Agentic Workflows (GH-AW).
 
-Participant work is prompt-forward and runs through the GitHub Copilot App.
-Teams use Chats, isolated sessions, Plan mode, Interactive steering, Fleet,
-Autopilot, reviews, checks, and pull-request experiences rather than following
-terminal runbooks.
+Participant work is prompt-forward and GitHub Copilot App-first. Teams use
+Chats, isolated sessions, Plan mode, Interactive steering, Fleet, Autopilot,
+reviews, checks, and pull-request experiences rather than following terminal
+runbooks.
+
+## GitHub Copilot App-first, provider-flexible
+
+The workshop assumes the GitHub Copilot App as the primary participant
+interface, with models from a GitHub Copilot subscription as the default.
+Participants who do not have a GitHub Copilot license may configure another
+model provider supported by the Copilot App, or a compatible custom endpoint,
+and continue with the App-native workflow wherever their selected provider and
+model support the required capabilities.
+
+![GitHub Copilot App Settings showing the Model providers page and Add provider menu](assets/readme/copilot-app-model-providers.png)
+
+To configure an alternate provider safely:
+
+1. Open **Settings** in the GitHub Copilot App.
+2. Choose **Model providers**, then select **Add provider**.
+3. Choose a supported provider or compatible custom endpoint.
+4. Enter the provider-specific connection details and API key in the App's
+   provider settings, then save the configuration.
+5. Open a session and select an available model from that provider.
+
+> [!WARNING]
+> Never commit an API key, paste it into a prompt, add it to an issue or pull
+> request, or share it. Enter API keys only in the Copilot App's provider
+> settings.
+
+Alternate provider configuration is not a claim of feature parity and does not
+grant or replace GitHub platform entitlements. Model availability, context and
+tool support, Fleet and Autopilot, cloud agents, organization policy, billing,
+and preview capabilities can vary by provider, model, account, organization,
+and preview status. GitHub-hosted features such as cloud coding agents and
+GitHub Advanced Security (GHAS) still require their applicable GitHub licenses,
+plans, policies, and availability.
 
 ## The mental model
 
