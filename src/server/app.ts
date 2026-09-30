@@ -13,6 +13,7 @@ import {
   type CreateFeedbackRequest,
   type VoteRequest,
 } from "../shared/contracts.js";
+import { sortFeedback } from "../shared/feedback-sorting.js";
 import { logger as defaultLogger, type Logger } from "./logger.js";
 import {
   FeedbackNotFoundError,
@@ -106,11 +107,13 @@ export const createApp = ({
 
     const items = await storage.list();
     const category = parsedQuery.data.category ?? "all";
+    const sort = parsedQuery.data.sort ?? "newest";
+    const matchingItems =
+      category === "all"
+        ? items
+        : items.filter((item) => item.category === category);
     response.json({
-      items:
-        category === "all"
-          ? items
-          : items.filter((item) => item.category === category),
+      items: sortFeedback(matchingItems, sort),
     });
   });
 

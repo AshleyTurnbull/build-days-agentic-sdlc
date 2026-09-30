@@ -8,14 +8,14 @@ behavior, focused tests, and no required infrastructure change.
 |---|---|---|---|
 | [Feedback status](feedback-status.md) | Move feedback through a small visible workflow | Valid state transitions | Pending |
 | [Category filtering](category-filtering.md) | Narrow the board without losing the current data set | Query/UI state | Implemented in this PR |
-| [Board sorting](board-sorting.md) | Order feedback by newest or most-voted | Stable deterministic ordering | Pending |
+| [Board sorting](board-sorting.md) | Order feedback by newest or most-voted | Stable deterministic ordering | Implemented in this PR |
 | [Author summary](author-summary.md) | Show aggregate contribution and vote information | Derived API data | Pending |
 
 The starter already implements feedback creation, listing, voting, persistence,
 health, readiness, CI, and the initial Azure deployment path. Those are the
-paved road, not the participant feature answer. Category filtering is
-implemented by this PR; board sorting, author summary, and feedback status
-remain pending.
+paved road, not the participant feature answer. Category filtering and board
+sorting are implemented by their respective PRs; author summary and feedback
+status remain pending until their implementation PRs.
 
 ## Assignment rules
 

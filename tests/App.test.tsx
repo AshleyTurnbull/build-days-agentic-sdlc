@@ -145,6 +145,117 @@ describe("feedback board", () => {
     );
   });
 
+  it("restores sort from the URL and keeps category and sort state during back navigation", async () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/?category=content&sort=most-votes",
+    );
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      jsonResponse({
+        items: [
+          {
+            id: "recent",
+            title: "Recent idea",
+            description: "A recent idea.",
+            category: "content",
+            displayName: "Lin",
+            votes: 0,
+            createdAt: "2025-01-02T00:00:00.000Z",
+          },
+          {
+            id: "popular",
+            title: "Popular idea",
+            description: "A popular idea.",
+            category: "content",
+            displayName: "Ada",
+            votes: 2,
+            createdAt: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+      }),
+    );
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: "Popular idea" }))
+      .toBeVisible();
+    expect(screen.getByLabelText("Sort feedback")).toHaveValue("most-votes");
+    expect(screen.getByLabelText("Filter by category")).toHaveValue("content");
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "/api/feedback?category=content&sort=most-votes",
+      expect.anything(),
+    );
+    expect(
+      screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+    ).toEqual(["Popular idea", "Recent idea"]);
+
+    await user.selectOptions(screen.getByLabelText("Sort feedback"), "newest");
+    expect(window.location.search).toBe("?category=content");
+
+    window.history.replaceState(
+      {},
+      "",
+      "/?category=content&sort=most-votes",
+    );
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    await waitFor(() =>
+      expect(screen.getByLabelText("Sort feedback")).toHaveValue("most-votes"),
+    );
+    expect(screen.getByLabelText("Filter by category")).toHaveValue("content");
+  });
+
+  it("reorders the visible board when a successful vote changes most-votes ordering", async () => {
+    window.history.replaceState({}, "", "/?sort=most-votes");
+    const recent: Feedback = {
+      id: "recent",
+      title: "Recent idea",
+      description: "A recent idea.",
+      category: "content",
+      displayName: "Lin",
+      votes: 0,
+      createdAt: "2025-01-02T00:00:00.000Z",
+    };
+    const popular: Feedback = {
+      id: "popular",
+      title: "Popular idea",
+      description: "A popular idea.",
+      category: "content",
+      displayName: "Ada",
+      votes: 2,
+      createdAt: "2025-01-01T00:00:00.000Z",
+    };
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      if (String(input).includes("/votes")) {
+        return jsonResponse({
+          feedback: { ...recent, votes: 3 },
+          alreadyVoted: false,
+        }, 201);
+      }
+      return jsonResponse({ items: [recent, popular] });
+    });
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: "Popular idea" }))
+      .toBeVisible();
+    expect(
+      screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+    ).toEqual(["Popular idea", "Recent idea"]);
+    await user.click(
+      screen.getByRole("button", { name: "Vote for Recent idea. 0 votes" }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent),
+      ).toEqual(["Recent idea", "Popular idea"]),
+    );
+    expect(
+      screen.getByRole("button", { name: "Vote for Recent idea. 3 votes" }),
+    ).toBeVisible();
+  });
+
   it("creates feedback and votes through the complete UI flow", async () => {
     let item: Feedback | undefined;
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, options) => {

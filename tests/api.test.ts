@@ -106,6 +106,102 @@ describe("feedback API", () => {
     expect(await storage.list()).toHaveLength(2);
   });
 
+  it("sorts deterministically, composes category filtering, and reflects new votes", async () => {
+    const storage = new InMemoryFeedbackStorage();
+    const rows = [
+      { id: "newest-b", createdAt: "2025-01-03T00:00:00.000Z", category: "content", votes: 0 },
+      { id: "newest-a", createdAt: "2025-01-03T00:00:00.000Z", category: "content", votes: 1 },
+      { id: "popular-old", createdAt: "2025-01-02T00:00:00.000Z", category: "tooling", votes: 3 },
+      { id: "popular-new-z", createdAt: "2025-01-04T00:00:00.000Z", category: "content", votes: 2 },
+      { id: "popular-new-a", createdAt: "2025-01-04T00:00:00.000Z", category: "content", votes: 2 },
+    ] as const;
+    for (const row of rows) {
+      await storage.create(
+        {
+          title: row.id,
+          description: "Sorting test item.",
+          category: row.category,
+          displayName: "Ada",
+        },
+        { id: row.id, createdAt: row.createdAt },
+      );
+      for (let vote = 0; vote < row.votes; vote += 1) {
+        await storage.vote(row.id, `${row.id}-client-${vote}`);
+      }
+    }
+    const storedIds = (await storage.list()).map((item) => item.id);
+    const app = createApp({ storage, logger: silentLogger });
+
+    const newest = await request(app).get("/api/feedback").expect(200);
+    expect(newest.body.items).toMatchObject([
+      { id: "popular-new-a" },
+      { id: "popular-new-z" },
+      { id: "newest-a" },
+      { id: "newest-b" },
+      { id: "popular-old" },
+    ]);
+
+    const mostVotes = await request(app)
+      .get("/api/feedback?sort=most-votes")
+      .expect(200);
+    expect(mostVotes.body.items).toMatchObject([
+      { id: "popular-old" },
+      { id: "popular-new-a" },
+      { id: "popular-new-z" },
+      { id: "newest-a" },
+      { id: "newest-b" },
+    ]);
+
+    const filtered = await request(app)
+      .get("/api/feedback?category=content&sort=most-votes")
+      .expect(200);
+    expect(filtered.body.items).toMatchObject([
+      { id: "popular-new-a" },
+      { id: "popular-new-z" },
+      { id: "newest-a" },
+      { id: "newest-b" },
+    ]);
+    expect((await storage.list()).map((item) => item.id)).toEqual(storedIds);
+
+    await request(app)
+      .post("/api/feedback/newest-a/votes")
+      .send({ clientId: "extra-voter-1" })
+      .expect(201);
+    await request(app)
+      .post("/api/feedback/newest-a/votes")
+      .send({ clientId: "extra-voter-2" })
+      .expect(201);
+    const afterVote = await request(app)
+      .get("/api/feedback?sort=most-votes")
+      .expect(200);
+    expect(afterVote.body.items).toMatchObject([
+      { id: "newest-a" },
+      { id: "popular-old" },
+      { id: "popular-new-a" },
+      { id: "popular-new-z" },
+      { id: "newest-b" },
+    ]);
+  });
+
+  it.each(["popular", "Most-votes", "most-votes "])(
+    "rejects unsupported sort query %s without normalizing it",
+    async (sort) => {
+      const app = createApp({
+        storage: new InMemoryFeedbackStorage(),
+        logger: silentLogger,
+      });
+      const response = await request(app)
+        .get(`/api/feedback?sort=${encodeURIComponent(sort)}`)
+        .expect(400);
+
+      expect(response.body.error).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Check the query parameters and try again.",
+        fieldErrors: { sort: ["Choose newest or most-votes."] },
+      });
+    },
+  );
+
   it.each(["unknown", "Content", "content "])(
     "rejects unsupported category query %s without normalizing it",
     async (category) => {

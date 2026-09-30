@@ -15,9 +15,9 @@
 
 ## 3. Board-sorting implementation PR
 
-- [ ] 3.1 Add validated `newest` and `most-votes` API ordering with the approved deterministic tie-breakers and category/sort composition; verify both modes, ties, vote updates, and actionable HTTP 400 handling with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
-- [ ] 3.2 Add an accessible sort control whose selected state survives refresh through the page URL and whose visible order updates after voting; verify control state, refresh behavior, and reordering with `npm test -- tests/App.test.tsx`.
-- [ ] 3.3 Update `docs/features/board-sorting.md` and the board-sorting row in `docs/features/README.md`; verify the index keeps the other three statuses accurate and this brief matches the approved tie-breakers.
+- [x] 3.1 Add validated `newest` and `most-votes` API ordering with the approved deterministic tie-breakers and category/sort composition; verify both modes, ties, vote updates, and actionable HTTP 400 handling with `npm test -- tests/contracts.test.ts tests/api.test.ts`.
+- [x] 3.2 Add an accessible sort control whose selected state survives refresh through the page URL and whose visible order updates after voting; verify control state, refresh behavior, and reordering with `npm test -- tests/App.test.tsx`.
+- [x] 3.3 Update `docs/features/board-sorting.md` and the board-sorting row in `docs/features/README.md`; verify the index keeps the other three statuses accurate and this brief matches the approved tie-breakers.
 - [ ] 3.4 After PR 2's workspace is refreshed from the merged category-filtering PR, complete one independent PR targeting `main`; check off only its tasks, pass `npm run check`, `openspec validate --all`, and `git --no-pager diff --check`, satisfy configured CI and security checks, obtain human review, and capture protected Azure-backed ordering evidence plus unchanged creation, voting, `/health`, and `/ready` behavior before merge.
 
 ## 4. Author-summary implementation PR
