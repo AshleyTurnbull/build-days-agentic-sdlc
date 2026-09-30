@@ -1,0 +1,48 @@
+name: Security fix
+description: Track a non-sensitive remediation after private triage.
+title: "[Security]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include exploit details, credentials, personal data, or an unpatched vulnerability here.
+        Report sensitive information through the repository's private vulnerability reporting link.
+  - type: input
+    id: advisory
+    attributes:
+      label: Private advisory or sanitized tracking reference
+      description: Reference the private advisory or approved sanitized record.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Sanitized impact and affected boundary
+      description: Describe affected components without disclosing exploitation instructions.
+    validations:
+      required: true
+  - type: input
+    id: openspec
+    attributes:
+      label: OpenSpec change
+      placeholder: openspec/changes/change-name/
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Independent verification
+      description: Name the deterministic test, scanner, or query that proves the fix.
+    validations:
+      required: true
+  - type: checkboxes
+    id: handling
+    attributes:
+      label: Safe handling
+      options:
+        - label: Sensitive details remain in the private advisory.
+          required: true
+        - label: The fix will not weaken security checks or deployment gates.
+          required: true
+

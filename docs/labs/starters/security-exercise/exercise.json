@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "generatedPath": "tests/security-exercise/unsafe-command.ts",
+  "expectedCodeqlQuery": "js/command-line-injection",
+  "vulnerableTemplate": "vulnerable-command.ts.txt",
+  "remediatedTemplate": "remediated-command.ts.txt",
+  "openspecScenario": "deterministic-security-exercise: Verifiable remediation"
+}

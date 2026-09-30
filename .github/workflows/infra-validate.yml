@@ -1,0 +1,80 @@
+name: Azure infrastructure validation
+
+on:
+  pull_request:
+    paths:
+      - "infra/**"
+      - ".github/workflows/infra-validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: infra-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    environment: workshop-validation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Bicep
+        run: az bicep build --file infra/main.bicep
+      - name: Verify OIDC configuration
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
+        shell: bash
+        env:
+          CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          TEAM_ID: ${{ vars.TEAM_ID }}
+        run: |
+          set -euo pipefail
+          for name in CLIENT_ID TENANT_ID SUBSCRIPTION_ID RESOURCE_GROUP TEAM_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing repository/environment variable $name. Configure Azure federated credentials for environment workshop-validation."
+              exit 1
+            fi
+          done
+      - uses: azure/login@v2
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Validate deployment
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
+        run: >
+          az deployment group validate
+          --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}"
+          --template-file infra/main.bicep
+          --parameters infra/main.example.bicepparam
+          teamIdentifier="${{ vars.TEAM_ID }}"
+      - name: Preview Azure changes
+        if: vars.AZURE_LIVE_VALIDATION_ENABLED == 'true'
+        run: >
+          az deployment group what-if
+          --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}"
+          --template-file infra/main.bicep
+          --parameters infra/main.example.bicepparam
+          teamIdentifier="${{ vars.TEAM_ID }}"
+          --result-format FullResourcePayloads
+          --no-pretty-print
+      - name: Summarize infrastructure evidence
+        run: |
+          {
+            echo "## Azure infrastructure validation"
+            echo "- Bicep compilation: completed"
+            echo "- Live Azure validation enabled: \`${{ vars.AZURE_LIVE_VALIDATION_ENABLED == 'true' }}\`"
+            if [ "${{ vars.AZURE_LIVE_VALIDATION_ENABLED }}" = "true" ]; then
+              echo "- Authentication: GitHub OIDC"
+              echo "- Scope: \`${{ vars.AZURE_RESOURCE_GROUP }}\`"
+              echo "- Deployment validation and what-if completed."
+            else
+              echo "- Deployment validation and what-if skipped until workshop quota is available."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

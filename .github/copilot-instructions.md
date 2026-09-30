@@ -1,21 +1,29 @@
-# GitHub Copilot instructions
+# Copilot repository instructions
 
-## OpenSpec workflow
+Before changing code or configuration:
 
-This repository uses OpenSpec for substantive feature and behavior changes.
+1. Read root `AGENTS.md` and `DESIGN.md`.
+2. Read the closest co-located `AGENTS.md`.
+3. Locate the active OpenSpec change and follow its approved specs, design, and tasks.
 
-- In GitHub Copilot app project sessions, prefer explicit natural-language skill invocation. The generated `.github/prompts/opsx-*.prompt.md` files provide slash commands in supported Copilot IDE extensions, but the app may not expose those commands through autocomplete.
-- Start planning with the `openspec-propose` skill. Create the proposal, delta requirements, design, and implementation tasks under `openspec/changes/<change-name>/`.
-- The propose workflow is planning-only. Do not edit implementation code until the user explicitly approves the proposal in a later message.
-- If planning artifacts need revision, use the `openspec-update-change` skill and keep the proposal, specs, design, and tasks consistent.
-- After approval, use the `openspec-apply-change` skill. Work through `tasks.md`, implement each task, validate the change, and mark completed tasks with `[x]`.
-- Before archiving, use the `openspec-verify-change` skill to compare the implementation with the proposal, requirements, design, and tasks. Resolve critical findings before continuing.
-- Finish with the `openspec-archive-change` skill. Sync delta specifications into `openspec/specs/` when appropriate and archive the completed change.
+OpenSpec is required for material feature, behavior, infrastructure, security,
+and workflow changes. Implement bounded tasks, preserve repository guardrails,
+and report completion only with relevant validation evidence.
 
-The equivalent Copilot IDE commands are `/opsx-propose`, `/opsx-update`, `/opsx-apply`, `/opsx-verify`, and `/opsx-archive`.
+## OpenSpec invocation
 
-## Generated files
+- In GitHub Copilot App project sessions, prefer explicit natural-language skill invocation. Generated `.github/prompts/opsx-*.prompt.md` files provide slash commands in supported Copilot IDE extensions, but the App may not expose those commands through autocomplete.
+- Use `openspec-propose` to create the proposal, delta requirements, design, and tasks. The proposal workflow is planning-only; do not edit implementation code until the user explicitly approves it in a later message.
+- Use `openspec-update-change` when planning artifacts need revision and keep the proposal, specs, design, and tasks consistent.
+- After approval, use `openspec-apply-change`, implement one bounded task at a time, validate it, and keep `tasks.md` checkboxes current.
+- Use `openspec-verify-change` before archiving and resolve critical findings.
+- Use `openspec-archive-change` to sync specifications when appropriate and archive the completed change.
 
-- Treat `.github/skills/openspec-*` and `.github/prompts/opsx-*` as OpenSpec-managed files. Do not edit them manually.
-- After upgrading the OpenSpec CLI, select the repository's full custom workflow set with `openspec config profile`, then run `openspec update`.
-- Keep the GitHub-hosted Copilot coding agent disabled. Do not add `.github/workflows/copilot-setup-steps.yml` or `.github/agents/openspec.agent.md` unless the repository owners explicitly change this policy.
+The equivalent Copilot IDE commands are `/opsx-propose`, `/opsx-update`,
+`/opsx-apply`, `/opsx-verify`, and `/opsx-archive`.
+
+## Generated OpenSpec integration
+
+- Treat `.github/skills/openspec-*` and `.github/prompts/opsx-*` as generated files. Refresh them with `openspec update` after selecting the full custom workflow set with `openspec config profile`.
+- Keep OpenSpec's generated GitHub-hosted coding-agent setup disabled. Do not add `.github/workflows/copilot-setup-steps.yml` or `.github/agents/openspec.agent.md` through OpenSpec unless the repository owners explicitly change this policy.
+- Preserve the workshop's separately reviewed custom agents, workflows, exercises, and cloud-agent learning content.

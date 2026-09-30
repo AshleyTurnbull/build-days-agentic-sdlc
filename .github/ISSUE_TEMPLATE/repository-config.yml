@@ -1,0 +1,51 @@
+name: Repository configuration
+description: Request a bounded GitHub, Azure identity, environment, or workshop configuration change.
+title: "[Config]: "
+labels: ["configuration"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Configuration area
+      options:
+        - GitHub Actions or rules
+        - Copilot or custom agents
+        - Azure OIDC or environment
+        - Workshop team setup
+        - Other repository configuration
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current and desired state
+      description: Describe the observable change without including credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope, ownership, and rollback
+      description: List repositories, environments, paths, owners, and a rollback approach.
+    validations:
+      required: true
+  - type: textarea
+    id: secrets
+    attributes:
+      label: Required variables or secret names
+      description: List names only. Never paste values. Prefer OIDC and repository/environment variables.
+  - type: input
+    id: openspec
+    attributes:
+      label: OpenSpec change for material configuration
+      description: Required for material workflow, infrastructure, security, or behavior changes; otherwise write N/A.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification and evidence
+      description: State how the change will be tested and where evidence will appear.
+    validations:
+      required: true
+

@@ -1,0 +1,51 @@
+name: Implementation task
+description: Assign a bounded implementation unit with ownership and validation.
+title: "[Task]: "
+labels: ["implementation"]
+body:
+  - type: input
+    id: parent
+    attributes:
+      label: Parent change or issue
+      description: Link the approved OpenSpec change and parent GitHub issue.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Bounded scope
+      description: State the exact outcome. Keep this independently reviewable.
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: Owned paths
+      description: List paths this task may modify and paths it must not modify.
+      placeholder: |
+        Owns:
+        - src/example/**
+        Excludes:
+        - infra/**
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link blocking tasks or write "None".
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation commands and evidence
+      description: Provide Windows-safe local commands and the expected CI evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: receipt
+    attributes:
+      label: Execution receipt
+      description: On completion, add the branch, commit or PR, commands run, results, and remaining blockers.
+

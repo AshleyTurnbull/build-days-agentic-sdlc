@@ -1,0 +1,26 @@
+import { execFile } from "node:child_process";
+import type { Request, Response } from "express";
+
+const allowedTargets = new Set(["localhost", "example.invalid"]);
+
+// Safe Lab 5 remediation: allow-list input and avoid invoking a shell.
+export function runTrainingDiagnostic(
+  request: Request,
+  response: Response,
+): void {
+  const target = String(request.query.target ?? "localhost");
+
+  if (!allowedTargets.has(target)) {
+    response.status(400).json({ status: "invalid-target" });
+    return;
+  }
+
+  execFile("printf", ["checking %s", target], (error, stdout) => {
+    if (error) {
+      response.status(500).json({ status: "failed" });
+      return;
+    }
+
+    response.json({ status: "complete", output: stdout });
+  });
+}

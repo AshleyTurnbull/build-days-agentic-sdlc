@@ -1,0 +1,41 @@
+{
+  "tools": {
+    "git": "git version 2.51.0",
+    "node": "v20.19.5",
+    "npm": "10.8.2",
+    "gh": "gh version 2.80.0",
+    "az": "{\"azure-cli\":\"2.77.0\"}",
+    "openspec": "1.0.0",
+    "copilot": "0.0.400"
+  },
+  "ghAuthenticated": true,
+  "azAuthenticated": true,
+  "repository": "octo-workshop/team-01",
+  "revisionContainsExpected": true,
+  "issuesEnabled": true,
+  "actionsEnabled": true,
+  "expectedOidcPrefix": "repo:octo-workshop@9876543/team-01@123456789",
+  "oidcPrefix": "repo:octo-workshop@9876543/team-01@123456789",
+  "immutableOidc": true,
+  "environments": ["workshop-validation", "workshop"],
+  "environmentVariables": {
+    "workshop-validation": [
+      "TEAM_ID",
+      "AZURE_CLIENT_ID",
+      "AZURE_TENANT_ID",
+      "AZURE_SUBSCRIPTION_ID",
+      "AZURE_RESOURCE_GROUP"
+    ],
+    "workshop": [
+      "TEAM_ID",
+      "AZURE_CLIENT_ID",
+      "AZURE_TENANT_ID",
+      "AZURE_SUBSCRIPTION_ID",
+      "AZURE_RESOURCE_GROUP"
+    ]
+  },
+  "subscriptionId": "00000000-0000-0000-0000-000000000001",
+  "resourceGroupAccessible": true,
+  "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/workshop-team01-rg",
+  "cloudValidation": true
+}
